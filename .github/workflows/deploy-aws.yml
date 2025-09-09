@@ -3,8 +3,43 @@ name: Deploy FortiGate to AWS
 on:
   workflow_dispatch:
     inputs:
+      fortigate_version:
+        description: 'FortiGate Version'
+        required: true
+        default: '7.6'
+        type: choice
+        options:
+        - '6.2'
+        - '6.4'
+        - '7.0'
+        - '7.2'
+        - '7.4'
+        - '7.6'
+      deployment_type:
+        description: 'Deployment Type'
+        required: true
+        default: 'single'
+        type: choice
+        options:
+        - single
+        - ha
+        - ha-single-az
+        - ha-existing-vpc
+        - ha-endpoint
+        - ha-3ports
+        - loadbalancer
+        - gwlb
+        - gwlb-crossaz
+        - gwlb-multitenant
+        - gwlb-transit
+        - transitgwy
+        - transitgwyconnect
+      aws_region:
+        description: 'AWS Region'
+        required: true
+        default: 'us-east-1'
       environment:
-        description: 'Environment to deploy'
+        description: 'Environment'
         required: true
         default: 'dev'
         type: choice
@@ -12,17 +47,35 @@ on:
         - dev
         - staging
         - prod
-      aws_region:
-        description: 'AWS Region'
-        required: true
-        default: 'us-east-1'
 
 env:
   TF_VERSION: '1.5.0'
+  WORKING_DIR: ./aws/${{ github.event.inputs.fortigate_version }}/${{ github.event.inputs.deployment_type }}
 
 jobs:
-  deploy:
+  validate:
     runs-on: ubuntu-latest
+    outputs:
+      path_exists: ${{ steps.check.outputs.exists }}
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      
+    - name: Check if deployment path exists
+      id: check
+      run: |
+        if [ -d "${{ env.WORKING_DIR }}" ]; then
+          echo "exists=true" >> $GITHUB_OUTPUT
+        else
+          echo "exists=false" >> $GITHUB_OUTPUT
+          echo "❌ Path ${{ env.WORKING_DIR }} does not exist"
+          exit 1
+        fi
+
+  deploy:
+    needs: validate
+    runs-on: ubuntu-latest
+    if: needs.validate.outputs.path_exists == 'true'
     
     steps:
     - name: Checkout
@@ -41,13 +94,21 @@ jobs:
         terraform_version: ${{ env.TF_VERSION }}
         
     - name: Terraform Init
-      working-directory: ./aws
+      working-directory: ${{ env.WORKING_DIR }}
       run: terraform init
       
     - name: Terraform Plan
-      working-directory: ./aws
+      working-directory: ${{ env.WORKING_DIR }}
       run: terraform plan -var="region=${{ github.event.inputs.aws_region }}"
       
     - name: Terraform Apply
-      working-directory: ./aws
+      working-directory: ${{ env.WORKING_DIR }}
       run: terraform apply -auto-approve -var="region=${{ github.event.inputs.aws_region }}"
+      
+    - name: Output Summary
+      run: |
+        echo "## Deployment Summary" >> $GITHUB_STEP_SUMMARY
+        echo "- **FortiGate Version:** ${{ github.event.inputs.fortigate_version }}" >> $GITHUB_STEP_SUMMARY
+        echo "- **Deployment Type:** ${{ github.event.inputs.deployment_type }}" >> $GITHUB_STEP_SUMMARY
+        echo "- **AWS Region:** ${{ github.event.inputs.aws_region }}" >> $GITHUB_STEP_SUMMARY
+        echo "- **Environment:** ${{ github.event.inputs.environment }}" >> $GITHUB_STEP_SUMMARY
