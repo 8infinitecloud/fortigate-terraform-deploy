@@ -50,15 +50,6 @@ on:
         description: 'EC2 Instance Type'
         required: true
         default: 'c5.xlarge'
-        type: choice
-        options:
-        - c5.large
-        - c5.xlarge
-        - c5.2xlarge
-        - c5.4xlarge
-        - c6g.large
-        - c6g.xlarge
-        - c6g.2xlarge
       architecture:
         description: 'Instance Architecture'
         required: true
@@ -72,32 +63,21 @@ on:
         required: true
         type: string
       byol_license_1:
-        description: 'BYOL License 1 (only for BYOL deployments)'
+        description: 'BYOL License 1 (only for BYOL)'
         required: false
         type: string
       byol_license_2:
-        description: 'BYOL License 2 (only for HA BYOL deployments)'
+        description: 'BYOL License 2 (only for HA BYOL)'
         required: false
         type: string
       vpc_cidr:
         description: 'VPC CIDR Block'
         required: false
         default: '10.1.0.0/16'
-        type: string
       admin_port:
         description: 'FortiGate Admin Port'
         required: false
         default: '8443'
-        type: string
-      environment:
-        description: 'Environment'
-        required: true
-        default: 'dev'
-        type: choice
-        options:
-        - dev
-        - staging
-        - prod
 
 env:
   TF_VERSION: '1.5.0'
@@ -112,14 +92,14 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v4
       
-    - name: Check if deployment path exists
+    - name: Check deployment path
       id: check
       run: |
         if [ -d "${{ env.WORKING_DIR }}" ]; then
           echo "exists=true" >> $GITHUB_OUTPUT
         else
           echo "exists=false" >> $GITHUB_OUTPUT
-          echo "❌ Path ${{ env.WORKING_DIR }} does not exist"
+          echo "Path ${{ env.WORKING_DIR }} does not exist"
           exit 1
         fi
 
@@ -148,11 +128,9 @@ jobs:
       working-directory: ${{ env.WORKING_DIR }}
       run: |
         if [ "${{ github.event.inputs.license_type }}" = "payg" ]; then
-          # Create empty license files for PAYG
           echo "# PAYG - No license required" > license.lic
           echo "# PAYG - No license required" > license2.lic
         else
-          # Create license files with BYOL content
           if [ -n "${{ github.event.inputs.byol_license_1 }}" ]; then
             echo "${{ github.event.inputs.byol_license_1 }}" > license.lic
           else
@@ -203,10 +181,3 @@ jobs:
         echo "- **Instance Type:** ${{ github.event.inputs.instance_type }}" >> $GITHUB_STEP_SUMMARY
         echo "- **Architecture:** ${{ github.event.inputs.architecture }}" >> $GITHUB_STEP_SUMMARY
         echo "- **Key Pair:** ${{ github.event.inputs.keypair_name }}" >> $GITHUB_STEP_SUMMARY
-        echo "- **VPC CIDR:** ${{ github.event.inputs.vpc_cidr }}" >> $GITHUB_STEP_SUMMARY
-        echo "- **Environment:** ${{ github.event.inputs.environment }}" >> $GITHUB_STEP_SUMMARY
-        
-        if [ "${{ github.event.inputs.license_type }}" = "byol" ]; then
-          echo "- **BYOL License 1:** ${{ github.event.inputs.byol_license_1 != '' && 'Provided' || 'Not provided' }}" >> $GITHUB_STEP_SUMMARY
-          echo "- **BYOL License 2:** ${{ github.event.inputs.byol_license_2 != '' && 'Provided' || 'Not provided' }}" >> $GITHUB_STEP_SUMMARY
-        fi
