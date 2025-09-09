@@ -1,0 +1,117 @@
+name: Destroy FortiGate AWS Resources
+
+on:
+  workflow_dispatch:
+    inputs:
+      fortigate_version:
+        description: 'FortiGate Version'
+        required: true
+        default: '7.6'
+        type: choice
+        options:
+        - '6.2'
+        - '6.4'
+        - '7.0'
+        - '7.2'
+        - '7.4'
+        - '7.6'
+      deployment_type:
+        description: 'Deployment Type'
+        required: true
+        default: 'single'
+        type: choice
+        options:
+        - single
+        - ha
+        - ha-single-az
+        - ha-existing-vpc
+        - ha-endpoint
+        - ha-3ports
+        - loadbalancer
+        - gwlb
+        - gwlb-crossaz
+        - gwlb-multitenant
+        - gwlb-transit
+        - transitgwy
+        - transitgwyconnect
+      aws_region:
+        description: 'AWS Region'
+        required: true
+        default: 'us-east-1'
+      confirm_destroy:
+        description: 'Type "DESTROY" to confirm deletion'
+        required: true
+        type: string
+
+env:
+  TF_VERSION: '1.5.0'
+  WORKING_DIR: ./aws/${{ github.event.inputs.fortigate_version }}/${{ github.event.inputs.deployment_type }}
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    outputs:
+      path_exists: ${{ steps.check.outputs.exists }}
+      confirmed: ${{ steps.confirm.outputs.confirmed }}
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      
+    - name: Check deployment path
+      id: check
+      run: |
+        if [ -d "${{ env.WORKING_DIR }}" ]; then
+          echo "exists=true" >> $GITHUB_OUTPUT
+        else
+          echo "exists=false" >> $GITHUB_OUTPUT
+          echo "Path ${{ env.WORKING_DIR }} does not exist"
+          exit 1
+        fi
+        
+    - name: Confirm destroy
+      id: confirm
+      run: |
+        if [ "${{ github.event.inputs.confirm_destroy }}" = "DESTROY" ]; then
+          echo "confirmed=true" >> $GITHUB_OUTPUT
+        else
+          echo "confirmed=false" >> $GITHUB_OUTPUT
+          echo "❌ Destroy not confirmed. You must type 'DESTROY' to proceed."
+          exit 1
+        fi
+
+  destroy:
+    needs: validate
+    runs-on: ubuntu-latest
+    if: needs.validate.outputs.path_exists == 'true' && needs.validate.outputs.confirmed == 'true'
+    
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ github.event.inputs.aws_region }}
+        
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v3
+      with:
+        terraform_version: ${{ env.TF_VERSION }}
+        
+    - name: Terraform Init
+      working-directory: ${{ env.WORKING_DIR }}
+      run: terraform init
+      
+    - name: Terraform Destroy
+      working-directory: ${{ env.WORKING_DIR }}
+      run: terraform destroy -auto-approve -input=false
+      
+    - name: Cleanup Summary
+      run: |
+        echo "## Destroy Summary" >> $GITHUB_STEP_SUMMARY
+        echo "- **FortiGate Version:** ${{ github.event.inputs.fortigate_version }}" >> $GITHUB_STEP_SUMMARY
+        echo "- **Deployment Type:** ${{ github.event.inputs.deployment_type }}" >> $GITHUB_STEP_SUMMARY
+        echo "- **AWS Region:** ${{ github.event.inputs.aws_region }}" >> $GITHUB_STEP_SUMMARY
+        echo "- **Status:** ✅ Resources destroyed successfully" >> $GITHUB_STEP_SUMMARY
