@@ -140,19 +140,45 @@ jobs:
           fi
         fi
         
+    - name: Set AZ variables based on region
+      id: az
+      run: |
+        case "${{ github.event.inputs.aws_region }}" in
+          us-east-1)
+            echo "az1=us-east-1a" >> $GITHUB_OUTPUT
+            echo "az2=us-east-1b" >> $GITHUB_OUTPUT
+            ;;
+          us-west-2)
+            echo "az1=us-west-2a" >> $GITHUB_OUTPUT
+            echo "az2=us-west-2b" >> $GITHUB_OUTPUT
+            ;;
+          eu-west-1)
+            echo "az1=eu-west-1a" >> $GITHUB_OUTPUT
+            echo "az2=eu-west-1b" >> $GITHUB_OUTPUT
+            ;;
+          *)
+            echo "az1=${{ github.event.inputs.aws_region }}a" >> $GITHUB_OUTPUT
+            echo "az2=${{ github.event.inputs.aws_region }}b" >> $GITHUB_OUTPUT
+            ;;
+        esac
+        
     - name: Create terraform.tfvars
       working-directory: ${{ env.WORKING_DIR }}
       run: |
+        UNIQUE_SUFFIX=$(date +%s)
         cat > terraform.tfvars << EOF
         access_key = "${{ secrets.AWS_ACCESS_KEY_ID }}"
         secret_key = "${{ secrets.AWS_SECRET_ACCESS_KEY }}"
         region = "${{ github.event.inputs.aws_region }}"
+        az1 = "${{ steps.az.outputs.az1 }}"
+        az2 = "${{ steps.az.outputs.az2 }}"
         license_type = "${{ github.event.inputs.license_type }}"
         size = "${{ github.event.inputs.instance_type }}"
         arch = "${{ github.event.inputs.architecture }}"
         keyname = "${{ github.event.inputs.keypair_name }}"
         vpccidr = "${{ github.event.inputs.vpc_cidr }}"
         adminsport = "8443"
+        tag_name_prefix = "fgt-$UNIQUE_SUFFIX"
         EOF
         
     - name: Terraform Init
@@ -173,6 +199,7 @@ jobs:
         echo "- **FortiGate Version:** ${{ github.event.inputs.fortigate_version }}" >> $GITHUB_STEP_SUMMARY
         echo "- **Deployment Type:** ${{ github.event.inputs.deployment_type }}" >> $GITHUB_STEP_SUMMARY
         echo "- **AWS Region:** ${{ github.event.inputs.aws_region }}" >> $GITHUB_STEP_SUMMARY
+        echo "- **Availability Zones:** ${{ steps.az.outputs.az1 }}, ${{ steps.az.outputs.az2 }}" >> $GITHUB_STEP_SUMMARY
         echo "- **License Type:** ${{ github.event.inputs.license_type }}" >> $GITHUB_STEP_SUMMARY
         echo "- **Instance Type:** ${{ github.event.inputs.instance_type }}" >> $GITHUB_STEP_SUMMARY
         echo "- **Architecture:** ${{ github.event.inputs.architecture }}" >> $GITHUB_STEP_SUMMARY
