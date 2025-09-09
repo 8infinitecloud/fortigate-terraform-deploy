@@ -1,0 +1,53 @@
+name: Deploy FortiGate to AWS
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to deploy'
+        required: true
+        default: 'dev'
+        type: choice
+        options:
+        - dev
+        - staging
+        - prod
+      aws_region:
+        description: 'AWS Region'
+        required: true
+        default: 'us-east-1'
+
+env:
+  TF_VERSION: '1.5.0'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ github.event.inputs.aws_region }}
+        
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v3
+      with:
+        terraform_version: ${{ env.TF_VERSION }}
+        
+    - name: Terraform Init
+      working-directory: ./aws
+      run: terraform init
+      
+    - name: Terraform Plan
+      working-directory: ./aws
+      run: terraform plan -var="region=${{ github.event.inputs.aws_region }}"
+      
+    - name: Terraform Apply
+      working-directory: ./aws
+      run: terraform apply -auto-approve -var="region=${{ github.event.inputs.aws_region }}"
