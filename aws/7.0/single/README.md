@@ -20,6 +20,25 @@ This deployment can be automated using GitHub Actions workflow. Follow these ste
    - **Environment**: Select environment (dev/staging/prod)
 4. Click **"Run workflow"** to start deployment
 
+### Deployment Parameters
+Configure the following parameters when running the workflow:
+
+**Required Parameters:**
+- **FortiGate Version**: Select the version (6.2, 6.4, 7.0, 7.2, 7.4, 7.6)
+- **Deployment Type**: Select deployment type (single, ha, gwlb, etc.)
+- **AWS Region**: Choose your target AWS region
+- **License Type**: Choose `payg` (Pay-As-You-Go) or `byol` (Bring Your Own License)
+- **Instance Type**: Select EC2 instance type (c5.xlarge, c6g.xlarge, etc.)
+- **Architecture**: Choose `x86` or `arm` (must match instance type)
+- **SSH Key Pair Name**: Existing AWS SSH key pair name for access
+
+**Optional Parameters:**
+- **VPC CIDR**: VPC CIDR block (default: 10.1.0.0/16)
+- **Admin Port**: FortiGate admin port (default: 8443)
+- **Environment**: Deployment environment (dev/staging/prod)
+
+
+
 The workflow will automatically:
 - Validate the deployment path exists
 - Initialize Terraform
