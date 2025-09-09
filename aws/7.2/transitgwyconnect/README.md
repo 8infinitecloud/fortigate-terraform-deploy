@@ -1,4 +1,36 @@
 # Deployment of a HA (a-p) FortiGate-VMs (BYOL/PAYG) on the AWS with AWS Transit Gateway Connect integration
+
+## GitHub Actions Deployment
+
+This deployment can be automated using GitHub Actions workflow. Follow these steps:
+
+### Prerequisites
+1. Fork this repository to your GitHub account
+2. Configure AWS credentials in repository secrets:
+   - `AWS_ACCESS_KEY_ID`
+   - `AWS_SECRET_ACCESS_KEY`
+
+### Deployment Steps
+1. Go to **Actions** tab in your GitHub repository
+2. Select **"Deploy FortiGate to AWS"** workflow
+3. Click **"Run workflow"** and configure:
+   - **FortiGate Version**: Select the version (matches this folder)
+   - **Deployment Type**: Select the deployment type (matches this folder)
+   - **AWS Region**: Choose your target region
+   - **Environment**: Select environment (dev/staging/prod)
+4. Click **"Run workflow"** to start deployment
+
+The workflow will automatically:
+- Validate the deployment path exists
+- Initialize Terraform
+- Plan the deployment
+- Apply the configuration
+- Provide deployment summary
+
+### Manual Deployment
+For manual deployment, continue with the instructions below.
+
+
 ## Introduction
 A Terraform script to deploy a HA (a-p) FortiGate-VMs on AWS with Transit Gateway Connect.  It will create GRE tunnel with the Transit Gateway Connect attachment.
 
