@@ -71,13 +71,9 @@ on:
         required: false
         type: string
       vpc_cidr:
-        description: 'VPC CIDR Block'
+        description: 'VPC CIDR (default: 10.1.0.0/16)'
         required: false
         default: '10.1.0.0/16'
-      admin_port:
-        description: 'FortiGate Admin Port'
-        required: false
-        default: '8443'
 
 env:
   TF_VERSION: '1.5.0'
@@ -156,7 +152,7 @@ jobs:
         arch = "${{ github.event.inputs.architecture }}"
         keyname = "${{ github.event.inputs.keypair_name }}"
         vpccidr = "${{ github.event.inputs.vpc_cidr }}"
-        adminsport = "${{ github.event.inputs.admin_port }}"
+        adminsport = "8443"
         EOF
         
     - name: Terraform Init
