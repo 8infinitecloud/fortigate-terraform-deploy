@@ -71,6 +71,14 @@ on:
         description: 'AWS SSH Key Pair Name'
         required: true
         type: string
+      byol_license_1:
+        description: 'BYOL License 1 (only for BYOL deployments)'
+        required: false
+        type: string
+      byol_license_2:
+        description: 'BYOL License 2 (only for HA BYOL deployments)'
+        required: false
+        type: string
       vpc_cidr:
         description: 'VPC CIDR Block'
         required: false
@@ -136,6 +144,28 @@ jobs:
       with:
         terraform_version: ${{ env.TF_VERSION }}
         
+    - name: Create license files
+      working-directory: ${{ env.WORKING_DIR }}
+      run: |
+        if [ "${{ github.event.inputs.license_type }}" = "payg" ]; then
+          # Create empty license files for PAYG
+          echo "# PAYG - No license required" > license.lic
+          echo "# PAYG - No license required" > license2.lic
+        else
+          # Create license files with BYOL content
+          if [ -n "${{ github.event.inputs.byol_license_1 }}" ]; then
+            echo "${{ github.event.inputs.byol_license_1 }}" > license.lic
+          else
+            echo "# BYOL License 1 - Please provide license content" > license.lic
+          fi
+          
+          if [ -n "${{ github.event.inputs.byol_license_2 }}" ]; then
+            echo "${{ github.event.inputs.byol_license_2 }}" > license2.lic
+          else
+            echo "# BYOL License 2 - Please provide license content" > license2.lic
+          fi
+        fi
+        
     - name: Create terraform.tfvars
       working-directory: ${{ env.WORKING_DIR }}
       run: |
@@ -175,3 +205,8 @@ jobs:
         echo "- **Key Pair:** ${{ github.event.inputs.keypair_name }}" >> $GITHUB_STEP_SUMMARY
         echo "- **VPC CIDR:** ${{ github.event.inputs.vpc_cidr }}" >> $GITHUB_STEP_SUMMARY
         echo "- **Environment:** ${{ github.event.inputs.environment }}" >> $GITHUB_STEP_SUMMARY
+        
+        if [ "${{ github.event.inputs.license_type }}" = "byol" ]; then
+          echo "- **BYOL License 1:** ${{ github.event.inputs.byol_license_1 != '' && 'Provided' || 'Not provided' }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **BYOL License 2:** ${{ github.event.inputs.byol_license_2 != '' && 'Provided' || 'Not provided' }}" >> $GITHUB_STEP_SUMMARY
+        fi
