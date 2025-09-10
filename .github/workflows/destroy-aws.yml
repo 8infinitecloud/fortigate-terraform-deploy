@@ -38,6 +38,10 @@ on:
         description: 'AWS Region'
         required: true
         default: 'us-east-1'
+      s3_bucket:
+        description: 'S3 Bucket for Terraform state (if used in deploy)'
+        required: false
+        type: string
       confirm_destroy:
         description: 'Type "DESTROY" to confirm deletion'
         required: true
@@ -100,6 +104,21 @@ jobs:
       with:
         terraform_version: ${{ env.TF_VERSION }}
         
+    - name: Configure S3 backend
+      if: github.event.inputs.s3_bucket != ''
+      working-directory: ${{ env.WORKING_DIR }}
+      run: |
+        STATE_KEY="${{ github.event.inputs.fortigate_version }}/${{ github.event.inputs.deployment_type }}/terraform.tfstate"
+        cat > backend.tf << EOF
+        terraform {
+          backend "s3" {
+            bucket = "${{ github.event.inputs.s3_bucket }}"
+            key    = "$STATE_KEY"
+            region = "${{ github.event.inputs.aws_region }}"
+          }
+        }
+        EOF
+        
     - name: Terraform Init
       working-directory: ${{ env.WORKING_DIR }}
       run: terraform init
@@ -115,3 +134,6 @@ jobs:
         echo "- **Deployment Type:** ${{ github.event.inputs.deployment_type }}" >> $GITHUB_STEP_SUMMARY
         echo "- **AWS Region:** ${{ github.event.inputs.aws_region }}" >> $GITHUB_STEP_SUMMARY
         echo "- **Status:** ✅ Resources destroyed successfully" >> $GITHUB_STEP_SUMMARY
+        if [ -n "${{ github.event.inputs.s3_bucket }}" ]; then
+          echo "- **Terraform State:** Removed from S3 bucket ${{ github.event.inputs.s3_bucket }}" >> $GITHUB_STEP_SUMMARY
+        fi
