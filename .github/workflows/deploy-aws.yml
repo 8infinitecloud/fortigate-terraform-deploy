@@ -150,6 +150,32 @@ jobs:
         }
         EOF
         
+    - name: Fix Ubuntu AMI for transitgwy
+      if: github.event.inputs.deployment_type == 'transitgwy'
+      working-directory: ${{ steps.workdir.outputs.dir }}
+      run: |
+        cat > linux_fix.tf << 'EOF'
+        data "aws_ami" "ubuntu" {
+          most_recent = true
+          owners      = ["099720109477"] # Canonical
+
+          filter {
+            name   = "name"
+            values = ["ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-*"]
+          }
+
+          filter {
+            name   = "virtualization-type"
+            values = ["hvm"]
+          }
+        }
+        EOF
+        
+        # Remove or rename original linux.tf to avoid conflicts
+        if [ -f "linux.tf" ]; then
+          mv linux.tf linux.tf.bak
+        fi
+        
     - name: Create license files
       working-directory: ${{ steps.workdir.outputs.dir }}
       run: |
