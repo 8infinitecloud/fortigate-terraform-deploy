@@ -64,11 +64,17 @@ jobs:
     - name: Check deployment path
       id: check
       run: |
-        if [ -d "${{ env.WORKING_DIR }}" ]; then
+        if [ "${{ github.event.inputs.deployment_type }}" = "transitgwy" ]; then
+          WORKING_DIR="./aws/${{ github.event.inputs.fortigate_version }}/transitgwy/terraform"
+        else
+          WORKING_DIR="${{ env.WORKING_DIR }}"
+        fi
+        
+        if [ -d "$WORKING_DIR" ]; then
           echo "exists=true" >> $GITHUB_OUTPUT
         else
           echo "exists=false" >> $GITHUB_OUTPUT
-          echo "Path ${{ env.WORKING_DIR }} does not exist"
+          echo "Path $WORKING_DIR does not exist"
           exit 1
         fi
         
@@ -104,9 +110,18 @@ jobs:
       with:
         terraform_version: ${{ env.TF_VERSION }}
         
+    - name: Set working directory
+      id: workdir
+      run: |
+        if [ "${{ github.event.inputs.deployment_type }}" = "transitgwy" ]; then
+          echo "dir=./aws/${{ github.event.inputs.fortigate_version }}/transitgwy/terraform" >> $GITHUB_OUTPUT
+        else
+          echo "dir=${{ env.WORKING_DIR }}" >> $GITHUB_OUTPUT
+        fi
+        
     - name: Configure S3 backend
       if: github.event.inputs.s3_bucket != ''
-      working-directory: ${{ env.WORKING_DIR }}
+      working-directory: ${{ steps.workdir.outputs.dir }}
       run: |
         STATE_KEY="${{ github.event.inputs.fortigate_version }}/${{ github.event.inputs.deployment_type }}/terraform.tfstate"
         cat > backend.tf << EOF
@@ -120,11 +135,11 @@ jobs:
         EOF
         
     - name: Terraform Init
-      working-directory: ${{ env.WORKING_DIR }}
+      working-directory: ${{ steps.workdir.outputs.dir }}
       run: terraform init
       
     - name: Terraform Destroy
-      working-directory: ${{ env.WORKING_DIR }}
+      working-directory: ${{ steps.workdir.outputs.dir }}
       run: terraform destroy -auto-approve -input=false
       
     - name: Cleanup Summary
