@@ -245,6 +245,7 @@ jobs:
         license_type = "${{ github.event.inputs.license_type }}"
         instance_type = "${{ github.event.inputs.instance_type }}"
         arch = "${{ github.event.inputs.architecture }}"
+        keypair = "${{ github.event.inputs.keypair_name }}"
         tag_name_prefix = "fgt-$UNIQUE_SUFFIX"
         EOF
         else
@@ -295,9 +296,7 @@ jobs:
         echo "- **License Type:** ${{ github.event.inputs.license_type }}" >> $GITHUB_STEP_SUMMARY
         echo "- **Instance Type:** ${{ github.event.inputs.instance_type }}" >> $GITHUB_STEP_SUMMARY
         echo "- **Architecture:** ${{ github.event.inputs.architecture }}" >> $GITHUB_STEP_SUMMARY
-        if [ "${{ github.event.inputs.deployment_type }}" != "transitgwy" ]; then
-          echo "- **Key Pair:** ${{ github.event.inputs.keypair_name }}" >> $GITHUB_STEP_SUMMARY
-        fi
+        echo "- **Key Pair:** ${{ github.event.inputs.keypair_name }}" >> $GITHUB_STEP_SUMMARY
         if [ -n "${{ github.event.inputs.s3_bucket }}" ]; then
           echo "- **Terraform State:** Stored in S3 bucket ${{ github.event.inputs.s3_bucket }}" >> $GITHUB_STEP_SUMMARY
         else
