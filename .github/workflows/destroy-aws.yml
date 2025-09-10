@@ -134,22 +134,29 @@ jobs:
         }
         EOF
         
+    - name: Fix Ubuntu AMI if linux.tf exists
+      working-directory: ${{ steps.workdir.outputs.dir }}
+      run: |
+        if [ -f "linux.tf" ]; then
+          echo "Fixing Ubuntu AMI in linux.tf..."
+          sed -i.bak 's/ubuntu-bionic-18.04/ubuntu-jammy-22.04/g' linux.tf
+          echo "Ubuntu AMI updated to 22.04 LTS"
+        fi
+        
+    - name: Create license files for destroy
+      working-directory: ${{ steps.workdir.outputs.dir }}
+      run: |
+        echo "# License file for destroy - content not needed" > license.lic
+        echo "# License file for destroy - content not needed" > license2.lic
+        
     - name: Create terraform.tfvars for destroy
       working-directory: ${{ steps.workdir.outputs.dir }}
       run: |
-        if [ "${{ github.event.inputs.deployment_type }}" = "transitgwy" ]; then
-          cat > terraform.tfvars << EOF
+        cat > terraform.tfvars << EOF
         access_key = "${{ secrets.AWS_ACCESS_KEY_ID }}"
         secret_key = "${{ secrets.AWS_SECRET_ACCESS_KEY }}"
         region = "${{ github.event.inputs.aws_region }}"
         EOF
-        else
-          cat > terraform.tfvars << EOF
-        access_key = "${{ secrets.AWS_ACCESS_KEY_ID }}"
-        secret_key = "${{ secrets.AWS_SECRET_ACCESS_KEY }}"
-        region = "${{ github.event.inputs.aws_region }}"
-        EOF
-        fi
         
     - name: Terraform Init
       working-directory: ${{ steps.workdir.outputs.dir }}
