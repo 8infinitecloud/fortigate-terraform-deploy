@@ -232,12 +232,21 @@ jobs:
       
     - name: Terraform Plan
       working-directory: ${{ steps.workdir.outputs.dir }}
-      run: terraform plan -input=false
+      run: terraform plan -input=false -out=tfplan
       
     - name: Terraform Apply
       working-directory: ${{ steps.workdir.outputs.dir }}
-      run: terraform apply -auto-approve -input=false
-      
+      run: |
+        echo "Starting Terraform Apply..."
+        terraform apply -input=false tfplan
+        
+    - name: Get Terraform Outputs
+      id: outputs
+      working-directory: ${{ steps.workdir.outputs.dir }}
+      run: |
+        echo "Retrieving Terraform outputs..."
+        terraform output -json > outputs.json || echo "{}" > outputs.json
+        
     - name: Output Summary
       run: |
         echo "## Deployment Summary" >> $GITHUB_STEP_SUMMARY
@@ -256,3 +265,5 @@ jobs:
         else
           echo "- **Terraform State:** Local (not persistent)" >> $GITHUB_STEP_SUMMARY
         fi
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "### Deployment Status: ✅ SUCCESS" >> $GITHUB_STEP_SUMMARY
