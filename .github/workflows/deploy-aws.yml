@@ -154,7 +154,7 @@ jobs:
       if: github.event.inputs.deployment_type == 'transitgwy'
       working-directory: ${{ steps.workdir.outputs.dir }}
       run: |
-        # Create updated linux.tf with correct AMI and complete resource
+        # Create updated linux.tf with correct AMI and resource references
         cat > linux.tf << 'EOF'
         ##############################################################################################################
         # VM LINUX for testing
@@ -179,8 +179,8 @@ jobs:
           ami                    = data.aws_ami.ubuntu.id
           instance_type          = "t3.micro"
           availability_zone      = var.availability_zone1
-          vpc_security_group_ids = [aws_security_group.mgmt_vpc_sg.id]
-          subnet_id              = aws_subnet.mgmt_vpc_subnet1.id
+          vpc_security_group_ids = [aws_security_group.NSG-mgmt-ssh-icmp-https.id]
+          subnet_id              = aws_subnet.spoke_mgmt-priv1.id
           
           tags = {
             Name = "${var.tag_name_prefix}-${var.tag_name_unique}-Linux-Instance"
