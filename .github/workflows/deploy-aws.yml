@@ -150,43 +150,14 @@ jobs:
         }
         EOF
         
-    - name: Fix Linux resources for transitgwy
-      if: github.event.inputs.deployment_type == 'transitgwy'
+    - name: Fix Ubuntu AMI if linux.tf exists
       working-directory: ${{ steps.workdir.outputs.dir }}
       run: |
-        # Create updated linux.tf with correct AMI and resource references
-        cat > linux.tf << 'EOF'
-        ##############################################################################################################
-        # VM LINUX for testing
-        ##############################################################################################################
-        ## Retrieve AMI info
-        data "aws_ami" "ubuntu" {
-          most_recent = true
-          owners      = ["099720109477"] # Canonical
-
-          filter {
-            name   = "name"
-            values = ["ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-*"]
-          }
-
-          filter {
-            name   = "virtualization-type"
-            values = ["hvm"]
-          }
-        }
-
-        resource "aws_instance" "instance-mgmt" {
-          ami                    = data.aws_ami.ubuntu.id
-          instance_type          = "t3.micro"
-          availability_zone      = var.availability_zone1
-          vpc_security_group_ids = [aws_security_group.NSG-mgmt-ssh-icmp-https.id]
-          subnet_id              = aws_subnet.spoke_mgmt-priv1.id
-          
-          tags = {
-            Name = "${var.tag_name_prefix}-${var.tag_name_unique}-Linux-Instance"
-          }
-        }
-        EOF
+        if [ -f "linux.tf" ]; then
+          echo "Fixing Ubuntu AMI in linux.tf..."
+          sed -i.bak 's/ubuntu-bionic-18.04/ubuntu-jammy-22.04/g' linux.tf
+          echo "Ubuntu AMI updated to 22.04 LTS"
+        fi
         
     - name: Create license files
       working-directory: ${{ steps.workdir.outputs.dir }}
