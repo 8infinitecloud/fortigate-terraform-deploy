@@ -134,6 +134,23 @@ jobs:
         }
         EOF
         
+    - name: Create terraform.tfvars for destroy
+      working-directory: ${{ steps.workdir.outputs.dir }}
+      run: |
+        if [ "${{ github.event.inputs.deployment_type }}" = "transitgwy" ]; then
+          cat > terraform.tfvars << EOF
+        access_key = "${{ secrets.AWS_ACCESS_KEY_ID }}"
+        secret_key = "${{ secrets.AWS_SECRET_ACCESS_KEY }}"
+        region = "${{ github.event.inputs.aws_region }}"
+        EOF
+        else
+          cat > terraform.tfvars << EOF
+        access_key = "${{ secrets.AWS_ACCESS_KEY_ID }}"
+        secret_key = "${{ secrets.AWS_SECRET_ACCESS_KEY }}"
+        region = "${{ github.event.inputs.aws_region }}"
+        EOF
+        fi
+        
     - name: Terraform Init
       working-directory: ${{ steps.workdir.outputs.dir }}
       run: terraform init
