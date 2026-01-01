@@ -46,14 +46,11 @@ output "secondary_private_subnets" {
 }
 
 output "secondary_gwlb_endpoints" {
-  description = "Secondary region GWLB endpoint IDs"
-  value = var.enable_multiregion ? [
-    aws_vpc_endpoint.secondary_gwlb_endpoint[0].id,
-    aws_vpc_endpoint.secondary_gwlb_endpoint_az2[0].id
-  ] : []
+  description = "Secondary region GWLB endpoint IDs (not supported cross-region)"
+  value       = "Cross-region GWLB endpoints not supported by AWS"
 }
 
 output "inspection_enabled" {
   description = "Whether traffic inspection is enabled in secondary region"
-  value       = var.enable_multiregion
+  value       = var.enable_multiregion ? "Via Transit Gateway to primary region" : "Not applicable"
 }
