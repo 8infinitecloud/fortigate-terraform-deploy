@@ -1,5 +1,6 @@
 # Multiregion Module
 module "multiregion" {
+  count  = var.enable_multiregion ? 1 : 0
   source = "./multiregion"
   
   # Pass variables to module
@@ -17,17 +18,15 @@ module "multiregion" {
   providers = {
     aws.secondary = aws.secondary
   }
-  
-  # Dependencies
-  depends_on = [
-    aws_ec2_transit_gateway.terraform-tgwy,
-    aws_ec2_transit_gateway_route_table.tgwy-fgt-route,
-    aws_vpc_endpoint_service.fgtgwlbservice
-  ]
 }
 
-# Secondary region provider
+# Secondary region provider (only when multiregion is enabled)
 provider "aws" {
   alias  = "secondary"
   region = var.secondary_region
+  
+  # Only configure when multiregion is enabled
+  skip_credentials_validation = var.enable_multiregion ? false : true
+  skip_metadata_api_check     = var.enable_multiregion ? false : true
+  skip_region_validation      = var.enable_multiregion ? false : true
 }

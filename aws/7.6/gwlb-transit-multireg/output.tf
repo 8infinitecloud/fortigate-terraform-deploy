@@ -35,28 +35,28 @@ output "FGTVPC" {
   value = aws_vpc.fgtvm-vpc.id
 }
 
-# Multiregion Outputs
+# Multiregion Outputs (conditional)
 output "multiregion_enabled" {
   description = "Whether multiregion is enabled"
-  value       = module.multiregion.multiregion_enabled
+  value       = var.enable_multiregion
 }
 
 output "secondary_region" {
   description = "Secondary region name"
-  value       = module.multiregion.secondary_region
+  value       = var.enable_multiregion && length(module.multiregion) > 0 ? module.multiregion[0].secondary_region : null
 }
 
 output "secondary_vpc_id" {
   description = "Secondary VPC ID"
-  value       = module.multiregion.secondary_vpc_id
+  value       = var.enable_multiregion && length(module.multiregion) > 0 ? module.multiregion[0].secondary_vpc_id : null
 }
 
 output "secondary_tgw_id" {
   description = "Secondary Transit Gateway ID"
-  value       = module.multiregion.secondary_tgw_id
+  value       = var.enable_multiregion && length(module.multiregion) > 0 ? module.multiregion[0].secondary_tgw_id : null
 }
 
 output "tgw_peering_id" {
   description = "TGW Peering Connection ID"
-  value       = module.multiregion.tgw_peering_id
+  value       = var.enable_multiregion && length(module.multiregion) > 0 ? module.multiregion[0].tgw_peering_id : null
 }

@@ -109,7 +109,7 @@ variable "bucket" {
 // instance architect
 // Either arm or x86
 variable "arch" {
-  default = "arm"
+  default = "x86"
 }
 
 # Multiregion Configuration
@@ -130,7 +130,7 @@ variable "secondary_region" {
 // c6g.xlarge is arm
 // For detail, refer to https://aws.amazon.com/ec2/instance-types/
 variable "size" {
-  default = "c6g.xlarge"
+  default = "c5.xlarge"
 }
 
 

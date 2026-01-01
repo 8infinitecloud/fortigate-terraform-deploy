@@ -1,4 +1,4 @@
-# Secondary region provider
+# Secondary region provider (conditional)
 terraform {
   required_providers {
     aws = {
@@ -9,7 +9,7 @@ terraform {
   }
 }
 
-provider "aws" {
-  alias  = "secondary"
-  region = var.secondary_region
+# Use data source instead of direct provider configuration
+data "aws_region" "secondary" {
+  provider = aws.secondary
 }
