@@ -1,2 +1,9 @@
-# Provider configuration (no terraform block needed here)
-# Uses configuration_aliases from main terraform block
+terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 5.0"
+      configuration_aliases = [aws.secondary]
+    }
+  }
+}

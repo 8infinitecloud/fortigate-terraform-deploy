@@ -10,6 +10,10 @@ module "multiregion" {
   # Pass GWLB service name for cross-region inspection
   primary_gwlb_service_name = aws_vpc_endpoint_service.fgtgwlbservice.service_name
   
+  # Pass Transit Gateway ID and Route Table ID
+  primary_tgw_id = aws_ec2_transit_gateway.terraform-tgwy.id
+  primary_tgw_route_table_id = aws_ec2_transit_gateway_route_table.tgwy-fgt-route.id
+  
   providers = {
     aws.secondary = aws.secondary
   }

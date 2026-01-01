@@ -59,3 +59,14 @@ variable "primary_gwlb_service_name" {
   description = "Primary region GWLB service name"
   type        = string
 }
+
+# Primary Transit Gateway resources
+variable "primary_tgw_id" {
+  description = "Primary Transit Gateway ID"
+  type        = string
+}
+
+variable "primary_tgw_route_table_id" {
+  description = "Primary Transit Gateway Route Table ID"
+  type        = string
+}

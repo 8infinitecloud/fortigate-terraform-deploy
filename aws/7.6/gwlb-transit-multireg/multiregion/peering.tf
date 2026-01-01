@@ -3,7 +3,7 @@ resource "aws_ec2_transit_gateway_peering_attachment" "primary_to_secondary" {
   count               = var.enable_multiregion ? 1 : 0
   peer_region         = var.secondary_region
   peer_transit_gateway_id = aws_ec2_transit_gateway.secondary_tgw[0].id
-  transit_gateway_id  = aws_ec2_transit_gateway.terraform-tgwy.id
+  transit_gateway_id  = var.primary_tgw_id
   
   tags = {
     Name = "tgw-peering-primary-to-secondary"
@@ -26,7 +26,7 @@ resource "aws_ec2_transit_gateway_route" "primary_to_secondary_route" {
   count                          = var.enable_multiregion ? 1 : 0
   destination_cidr_block         = var.secondary_vpc_cidr
   transit_gateway_attachment_id  = aws_ec2_transit_gateway_peering_attachment.primary_to_secondary[0].id
-  transit_gateway_route_table_id = aws_ec2_transit_gateway_route_table.tgwy-fgt-route.id
+  transit_gateway_route_table_id = var.primary_tgw_route_table_id
   
   depends_on = [aws_ec2_transit_gateway_peering_attachment_accepter.secondary_accepter]
 }
