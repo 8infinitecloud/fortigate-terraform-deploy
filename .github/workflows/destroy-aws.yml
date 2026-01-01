@@ -32,6 +32,7 @@ on:
         - gwlb-crossaz
         - gwlb-multitenant
         - gwlb-transit
+        - gwlb-transit-multireg
         - transitgwy
         - transitgwyconnect
       aws_region:
