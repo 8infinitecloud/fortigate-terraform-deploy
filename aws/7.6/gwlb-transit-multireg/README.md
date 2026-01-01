@@ -1,4 +1,38 @@
-# Deployment of FortiGate-VM (BYOL/PAYG) on the AWS with GWLB integration and Transit Gateway
+# Deployment of FortiGate-VM (BYOL/PAYG) on AWS with GWLB integration, Transit Gateway and Multi-Region Support
+
+## Multi-Region Architecture
+
+This deployment creates a **multi-region architecture by default** with:
+
+**Primary Region (us-east-1):**
+- FortiGate HA cluster with GWLB for traffic inspection
+- Transit Gateway for connectivity
+- Customer VPCs with full inspection
+
+**Secondary Region (us-west-2):**
+- VPC with public/private subnets
+- Transit Gateway for local connectivity  
+- GWLB Endpoints pointing to primary region FortiGates
+- **All traffic inspected by primary region FortiGates**
+
+## Traffic Flow
+
+```
+Oregon (us-west-2) → GWLB Endpoints → Virginia (us-east-1) FortiGates → Inspection → Return
+```
+
+## Configuration
+
+To **disable multi-region** (single region only):
+```hcl
+enable_multiregion = false
+```
+
+To **enable multi-region** (default):
+```hcl
+enable_multiregion = true  # Default value
+secondary_region = "us-west-2"  # Default value
+```
 
 ## GitHub Actions Deployment
 

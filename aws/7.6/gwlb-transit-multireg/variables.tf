@@ -116,7 +116,7 @@ variable "arch" {
 variable "enable_multiregion" {
   description = "Enable multiregion deployment"
   type        = bool
-  default     = false
+  default     = true
 }
 
 variable "secondary_region" {

@@ -41,22 +41,32 @@ output "multiregion_enabled" {
   value       = var.enable_multiregion
 }
 
+output "architecture_summary" {
+  description = "Architecture deployment summary"
+  value = var.enable_multiregion ? "Multi-Region: Primary (us-east-1) + Secondary (${var.secondary_region}) with cross-region inspection" : "Single Region: ${var.region} only"
+}
+
 output "secondary_region" {
   description = "Secondary region name"
-  value       = var.enable_multiregion && length(module.multiregion) > 0 ? module.multiregion[0].secondary_region : null
+  value       = var.enable_multiregion && length(module.multiregion) > 0 ? module.multiregion[0].secondary_region : "Not deployed"
 }
 
 output "secondary_vpc_id" {
   description = "Secondary VPC ID"
-  value       = var.enable_multiregion && length(module.multiregion) > 0 ? module.multiregion[0].secondary_vpc_id : null
+  value       = var.enable_multiregion && length(module.multiregion) > 0 ? module.multiregion[0].secondary_vpc_id : "Not deployed"
 }
 
 output "secondary_tgw_id" {
   description = "Secondary Transit Gateway ID"
-  value       = var.enable_multiregion && length(module.multiregion) > 0 ? module.multiregion[0].secondary_tgw_id : null
+  value       = var.enable_multiregion && length(module.multiregion) > 0 ? module.multiregion[0].secondary_tgw_id : "Not deployed"
 }
 
 output "tgw_peering_id" {
   description = "TGW Peering Connection ID"
-  value       = var.enable_multiregion && length(module.multiregion) > 0 ? module.multiregion[0].tgw_peering_id : null
+  value       = var.enable_multiregion && length(module.multiregion) > 0 ? module.multiregion[0].tgw_peering_id : "Not deployed"
+}
+
+output "inspection_flow" {
+  description = "Traffic inspection flow"
+  value = var.enable_multiregion ? "All traffic from ${var.secondary_region} inspected by FortiGates in ${var.region}" : "All traffic inspected locally in ${var.region}"
 }
