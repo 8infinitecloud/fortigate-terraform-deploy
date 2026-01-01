@@ -27,12 +27,12 @@ resource "aws_security_group" "secondary_public_sg" {
     cidr_blocks = [var.secondary_vpc_cidr]
   }
 
-  # Allow traffic from primary region VPCs
+  # Allow traffic from primary region VPCs (hardcoded CIDRs)
   ingress {
     from_port   = 0
     to_port     = 65535
     protocol    = "tcp"
-    cidr_blocks = [var.vpccidr, var.csvpccidr, var.cs2vpccidr]
+    cidr_blocks = ["10.1.0.0/16", "20.1.0.0/16", "30.1.0.0/16"]
   }
 
   egress {
@@ -61,12 +61,12 @@ resource "aws_security_group" "secondary_private_sg" {
     cidr_blocks = [var.secondary_vpc_cidr]
   }
 
-  # Allow traffic from primary region VPCs
+  # Allow traffic from primary region VPCs (hardcoded CIDRs)
   ingress {
     from_port   = 0
     to_port     = 65535
     protocol    = "tcp"
-    cidr_blocks = [var.vpccidr, var.csvpccidr, var.cs2vpccidr]
+    cidr_blocks = ["10.1.0.0/16", "20.1.0.0/16", "30.1.0.0/16"]
   }
 
   egress {

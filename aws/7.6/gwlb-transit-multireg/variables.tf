@@ -125,6 +125,19 @@ variable "secondary_region" {
   default     = "us-west-2"
 }
 
+# Tag prefix for resource naming
+variable "tag_name_prefix" {
+  description = "Prefix for resource tags"
+  type        = string
+  default     = "terraform"
+}
+
+variable "tag_name_unique" {
+  description = "Unique identifier for tags"
+  type        = string
+  default     = "gwlb-transit"
+}
+
 // instance type needs to match the architect
 // c5.xlarge is x86_64
 // c6g.xlarge is arm

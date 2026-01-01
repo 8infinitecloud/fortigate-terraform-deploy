@@ -54,7 +54,7 @@ variable "secondary_private_subnet_az2" {
   default     = "10.2.3.0/24"
 }
 
-# Primary GWLB service name (passed from main)
+# Pass primary region variables for cross-region routing
 variable "primary_gwlb_service_name" {
   description = "Primary region GWLB service name"
   type        = string

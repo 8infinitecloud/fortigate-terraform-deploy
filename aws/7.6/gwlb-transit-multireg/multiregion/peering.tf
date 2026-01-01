@@ -31,11 +31,11 @@ resource "aws_ec2_transit_gateway_route" "primary_to_secondary_route" {
   depends_on = [aws_ec2_transit_gateway_peering_attachment_accepter.secondary_accepter]
 }
 
-# Route from secondary to primary VPCs
+# Route from secondary to primary VPCs (hardcoded CIDRs)
 resource "aws_ec2_transit_gateway_route" "secondary_to_primary_fgt" {
   count                          = var.enable_multiregion ? 1 : 0
   provider                       = aws.secondary
-  destination_cidr_block         = var.vpccidr
+  destination_cidr_block         = "10.1.0.0/16"
   transit_gateway_attachment_id  = aws_ec2_transit_gateway_peering_attachment.primary_to_secondary[0].id
   transit_gateway_route_table_id = aws_ec2_transit_gateway_route_table.secondary_tgw_route_table[0].id
   
@@ -45,7 +45,7 @@ resource "aws_ec2_transit_gateway_route" "secondary_to_primary_fgt" {
 resource "aws_ec2_transit_gateway_route" "secondary_to_primary_customer1" {
   count                          = var.enable_multiregion ? 1 : 0
   provider                       = aws.secondary
-  destination_cidr_block         = var.csvpccidr
+  destination_cidr_block         = "20.1.0.0/16"
   transit_gateway_attachment_id  = aws_ec2_transit_gateway_peering_attachment.primary_to_secondary[0].id
   transit_gateway_route_table_id = aws_ec2_transit_gateway_route_table.secondary_tgw_route_table[0].id
   
@@ -55,7 +55,7 @@ resource "aws_ec2_transit_gateway_route" "secondary_to_primary_customer1" {
 resource "aws_ec2_transit_gateway_route" "secondary_to_primary_customer2" {
   count                          = var.enable_multiregion ? 1 : 0
   provider                       = aws.secondary
-  destination_cidr_block         = var.cs2vpccidr
+  destination_cidr_block         = "30.1.0.0/16"
   transit_gateway_attachment_id  = aws_ec2_transit_gateway_peering_attachment.primary_to_secondary[0].id
   transit_gateway_route_table_id = aws_ec2_transit_gateway_route_table.secondary_tgw_route_table[0].id
   
