@@ -101,17 +101,3 @@ resource "aws_route_table_association" "secondary_private_subnet_az2_association
   subnet_id      = aws_subnet.secondary_private_subnet_az2[0].id
   route_table_id = aws_route_table.secondary_private_rt[0].id
 }
-
-resource "aws_route_table_association" "secondary_private_subnet_az1_association" {
-  count          = var.enable_multiregion ? 1 : 0
-  provider       = aws.secondary
-  subnet_id      = aws_subnet.secondary_private_subnet_az1[0].id
-  route_table_id = aws_route_table.secondary_private_rt[0].id
-}
-
-resource "aws_route_table_association" "secondary_private_subnet_az2_association" {
-  count          = var.enable_multiregion ? 1 : 0
-  provider       = aws.secondary
-  subnet_id      = aws_subnet.secondary_private_subnet_az2[0].id
-  route_table_id = aws_route_table.secondary_private_rt[0].id
-}
