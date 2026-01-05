@@ -222,17 +222,13 @@ jobs:
         EOF
         elif [ "${{ github.event.inputs.deployment_type }}" = "gwlb-eks-private" ]; then
           if [ -f "terraform.tfvars" ]; then
-            cat >> terraform.tfvars << EOF
-
-# Pipeline variables (auto-generated)
-access_key = "${{ secrets.AWS_ACCESS_KEY_ID }}"
-secret_key = "${{ secrets.AWS_SECRET_ACCESS_KEY }}"
-region = "${{ github.event.inputs.aws_region }}"
-az1 = "${{ steps.az.outputs.az1 }}"
-az2 = "${{ steps.az.outputs.az2 }}"
-EOF
+            echo "access_key = \"${{ secrets.AWS_ACCESS_KEY_ID }}\"" >> terraform.tfvars
+            echo "secret_key = \"${{ secrets.AWS_SECRET_ACCESS_KEY }}\"" >> terraform.tfvars
+            echo "region = \"${{ github.event.inputs.aws_region }}\"" >> terraform.tfvars
+            echo "az1 = \"${{ steps.az.outputs.az1 }}\"" >> terraform.tfvars
+            echo "az2 = \"${{ steps.az.outputs.az2 }}\"" >> terraform.tfvars
           else
-            echo "Error: terraform.tfvars not found for gwlb-eks-private. Please configure VPC and subnet IDs first."
+            echo "Error: terraform.tfvars not found for gwlb-eks-private."
             exit 1
           fi
         else
