@@ -23,13 +23,38 @@ variable "customer_public_subnet_az2_id" {
 }
 
 variable "customer_private_subnet_az1_id" {
-  description = "Customer private subnet AZ1 ID from gwlb-crossaz"
+  description = "Customer private subnet AZ1 ID from gwlb-crossaz (reserved for ingress)"
   type        = string
 }
 
 variable "customer_private_subnet_az2_id" {
-  description = "Customer private subnet AZ2 ID from gwlb-crossaz"
+  description = "Customer private subnet AZ2 ID from gwlb-crossaz (reserved for ingress)"
   type        = string
+}
+
+// New subnets for EKS worker nodes
+variable "eks_private_subnet_az1_cidr" {
+  description = "CIDR block for EKS private subnet AZ1"
+  type        = string
+  default     = "20.1.10.0/24"
+}
+
+variable "eks_private_subnet_az2_cidr" {
+  description = "CIDR block for EKS private subnet AZ2"
+  type        = string
+  default     = "20.1.11.0/24"
+}
+
+variable "az1" {
+  description = "Availability Zone 1"
+  type        = string
+  default     = "eu-west-1a"
+}
+
+variable "az2" {
+  description = "Availability Zone 2"
+  type        = string
+  default     = "eu-west-1b"
 }
 
 // EKS Cluster Configuration
@@ -75,8 +100,8 @@ variable "endpoint_public_access" {
   default     = false
 }
 
-variable "public_access_cidrs" {
-  description = "CIDR blocks that can access the public API server endpoint"
+variable "eks_admin_users" {
+  description = "List of IAM users to grant admin access to EKS cluster"
   type        = list(string)
-  default     = ["0.0.0.0/0"]
+  default     = ["hassel.munoz"]
 }

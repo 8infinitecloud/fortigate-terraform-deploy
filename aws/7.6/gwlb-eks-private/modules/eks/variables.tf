@@ -55,6 +55,12 @@ variable "public_access_cidrs" {
   default     = ["0.0.0.0/0"]
 }
 
+variable "eks_admin_users" {
+  description = "List of IAM users to grant admin access to EKS cluster"
+  type        = list(string)
+  default     = []
+}
+
 variable "tags" {
   description = "Tags to apply to resources"
   type        = map(string)

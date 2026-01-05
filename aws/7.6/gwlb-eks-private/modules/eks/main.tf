@@ -15,10 +15,36 @@ resource "aws_eks_cluster" "cluster" {
     aws_iam_role_policy_attachment.cluster_policy,
   ]
 
+  access_config {
+    authentication_mode = "API_AND_CONFIG_MAP"
+  }
+
   tags = merge(var.tags, {
     Name = "${var.cluster_name}-eks-cluster"
   })
 }
+
+# EKS Access Entry for admin users
+resource "aws_eks_access_entry" "admin_users" {
+  count         = length(var.eks_admin_users)
+  cluster_name  = aws_eks_cluster.cluster.name
+  principal_arn = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:user/${var.eks_admin_users[count.index]}"
+  type          = "STANDARD"
+}
+
+resource "aws_eks_access_policy_association" "admin_policy" {
+  count           = length(var.eks_admin_users)
+  cluster_name    = aws_eks_cluster.cluster.name
+  principal_arn   = aws_eks_access_entry.admin_users[count.index].principal_arn
+  policy_arn      = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
+
+  access_scope {
+    type = "cluster"
+  }
+}
+
+# Data source to get current AWS account ID
+data "aws_caller_identity" "current" {}
 
 # EKS Node Group
 resource "aws_eks_node_group" "nodes" {

@@ -37,13 +37,17 @@ From your `gwlb-crossaz` deployment outputs, you need:
    ```
 
 ## What This Creates
-- EKS cluster in private subnets
-- NAT Gateways for internet access
-- Route tables for private subnets
-- IAM roles for EKS cluster and nodes
+- **New private subnets** for EKS worker nodes (separate from existing ones)
+- **EKS cluster** in the new private subnets
+- **NAT Gateways** for internet access
+- **Route tables** for the new EKS private subnets
+- **IAM roles** for EKS cluster and nodes
 
 ## Architecture
-The EKS nodes are deployed in the existing private subnets and use NAT Gateways for outbound internet access while being protected by the FortiGate GWLB architecture.
+- **Existing private subnets**: Reserved for ingress controllers
+- **New EKS private subnets**: Dedicated for worker nodes
+- **NAT Gateways**: Provide outbound internet access for EKS nodes
+- **FortiGate GWLB**: Protects all traffic flows
 
 ## Cleanup
 ```bash

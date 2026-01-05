@@ -220,6 +220,23 @@ jobs:
         keypair = "${{ github.event.inputs.keypair_name }}"
         tag_name_prefix = "fgt-$UNIQUE_SUFFIX"
         EOF
+        elif [ "${{ github.event.inputs.deployment_type }}" = "gwlb-eks-private" ]; then
+          # For gwlb-eks-private, preserve existing terraform.tfvars and only add pipeline variables
+          if [ -f "terraform.tfvars" ]; then
+            # Append pipeline variables to existing file
+            cat >> terraform.tfvars << EOF
+
+# Pipeline variables (auto-generated)
+access_key = "${{ secrets.AWS_ACCESS_KEY_ID }}"
+secret_key = "${{ secrets.AWS_SECRET_ACCESS_KEY }}"
+region = "${{ github.event.inputs.aws_region }}"
+az1 = "${{ steps.az.outputs.az1 }}"
+az2 = "${{ steps.az.outputs.az2 }}"
+EOF
+          else
+            echo "Error: terraform.tfvars not found for gwlb-eks-private. Please configure VPC and subnet IDs first."
+            exit 1
+          fi
         else
           cat > terraform.tfvars << EOF
         access_key = "${{ secrets.AWS_ACCESS_KEY_ID }}"

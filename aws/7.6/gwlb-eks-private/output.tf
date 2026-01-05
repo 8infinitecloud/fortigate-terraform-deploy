@@ -15,11 +15,19 @@ output "CustomerVPCId" {
   value = var.customer_vpc_id
 }
 
-output "CustomerPrivateSubnetAZ1" {
+output "EKSPrivateSubnetAZ1" {
+  value = aws_subnet.eks_private_subnet_az1.id
+}
+
+output "EKSPrivateSubnetAZ2" {
+  value = aws_subnet.eks_private_subnet_az2.id
+}
+
+output "IngressPrivateSubnetAZ1" {
   value = var.customer_private_subnet_az1_id
 }
 
-output "CustomerPrivateSubnetAZ2" {
+output "IngressPrivateSubnetAZ2" {
   value = var.customer_private_subnet_az2_id
 }
 
@@ -27,6 +35,10 @@ output "NATGatewayAZ1" {
   value = aws_nat_gateway.nat_gw_az1.id
 }
 
-output "NATGatewayAZ2" {
-  value = aws_nat_gateway.nat_gw_az2.id
+output "KubeconfigCommand" {
+  value = "aws eks update-kubeconfig --region ${var.region} --name ${module.eks_cluster.cluster_name} --profile your-aws-profile"
+}
+
+output "EKSAdminUsers" {
+  value = var.eks_admin_users
 }

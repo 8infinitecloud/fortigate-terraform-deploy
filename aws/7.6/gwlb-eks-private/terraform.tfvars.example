@@ -5,6 +5,12 @@ customer_public_subnet_az2_id = "subnet-xxxxxxxxx"
 customer_private_subnet_az1_id = "subnet-xxxxxxxxx"
 customer_private_subnet_az2_id = "subnet-xxxxxxxxx"
 
+// New subnets for EKS worker nodes (will be created)
+eks_private_subnet_az1_cidr = "20.1.10.0/24"
+eks_private_subnet_az2_cidr = "20.1.11.0/24"
+az1 = "eu-west-1a"
+az2 = "eu-west-1b"
+
 // EKS Configuration
 cluster_name = "customer-eks-cluster"
 kubernetes_version = "1.28"

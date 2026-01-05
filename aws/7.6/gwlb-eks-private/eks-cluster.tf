@@ -1,3 +1,28 @@
+# Create new private subnets for EKS worker nodes
+resource "aws_subnet" "eks_private_subnet_az1" {
+  vpc_id            = var.customer_vpc_id
+  cidr_block        = var.eks_private_subnet_az1_cidr
+  availability_zone = var.az1
+  
+  tags = {
+    Name = "EKS Private Subnet AZ1"
+    "kubernetes.io/role/internal-elb" = "1"
+    "kubernetes.io/cluster/${var.cluster_name}" = "owned"
+  }
+}
+
+resource "aws_subnet" "eks_private_subnet_az2" {
+  vpc_id            = var.customer_vpc_id
+  cidr_block        = var.eks_private_subnet_az2_cidr
+  availability_zone = var.az2
+  
+  tags = {
+    Name = "EKS Private Subnet AZ2"
+    "kubernetes.io/role/internal-elb" = "1"
+    "kubernetes.io/cluster/${var.cluster_name}" = "owned"
+  }
+}
+
 # EKS Cluster Module
 module "eks_cluster" {
   source = "./modules/eks"
@@ -5,13 +30,14 @@ module "eks_cluster" {
   cluster_name           = var.cluster_name
   kubernetes_version     = var.kubernetes_version
   vpc_id                 = var.customer_vpc_id
-  private_subnet_ids     = [var.customer_private_subnet_az1_id, var.customer_private_subnet_az2_id]
+  private_subnet_ids     = [aws_subnet.eks_private_subnet_az1.id, aws_subnet.eks_private_subnet_az2.id]
   node_instance_types    = var.node_instance_types
   desired_capacity       = var.desired_capacity
   max_capacity           = var.max_capacity
   min_capacity           = var.min_capacity
   endpoint_public_access = var.endpoint_public_access
   public_access_cidrs    = var.public_access_cidrs
+  eks_admin_users        = var.eks_admin_users
 
   tags = {
     Environment = "demo"
@@ -80,11 +106,11 @@ resource "aws_route_table" "csprivate_rt_az2" {
 }
 
 resource "aws_route_table_association" "csprivate_rta_az1" {
-  subnet_id      = var.customer_private_subnet_az1_id
+  subnet_id      = aws_subnet.eks_private_subnet_az1.id
   route_table_id = aws_route_table.csprivate_rt_az1.id
 }
 
 resource "aws_route_table_association" "csprivate_rta_az2" {
-  subnet_id      = var.customer_private_subnet_az2_id
+  subnet_id      = aws_subnet.eks_private_subnet_az2.id
   route_table_id = aws_route_table.csprivate_rt_az2.id
 }
