@@ -1,0 +1,88 @@
+name: Destroy EKS Private Cluster
+
+on:
+  workflow_dispatch:
+    inputs:
+      aws_region:
+        description: 'AWS Region'
+        required: true
+        default: 'us-east-1'
+      s3_bucket:
+        description: 'S3 Bucket for Terraform state (if used in deploy)'
+        required: false
+        type: string
+      confirm_destroy:
+        description: 'Type "DESTROY" to confirm deletion'
+        required: true
+        type: string
+
+env:
+  TF_VERSION: '1.5.0'
+  WORKING_DIR: ./aws/7.6/gwlb-eks-private
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    outputs:
+      confirmed: ${{ steps.check.outputs.confirmed }}
+    steps:
+    - name: Validate confirmation
+      id: check
+      run: |
+        if [ "${{ github.event.inputs.confirm_destroy }}" = "DESTROY" ]; then
+          echo "confirmed=true" >> $GITHUB_OUTPUT
+        else
+          echo "confirmed=false" >> $GITHUB_OUTPUT
+          echo "Confirmation failed. You must type 'DESTROY' to proceed."
+          exit 1
+        fi
+
+  destroy:
+    needs: validate
+    runs-on: ubuntu-latest
+    if: needs.validate.outputs.confirmed == 'true'
+    
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ github.event.inputs.aws_region }}
+        
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v3
+      with:
+        terraform-version: ${{ env.TF_VERSION }}
+        
+    - name: Configure S3 backend
+      if: github.event.inputs.s3_bucket != ''
+      working-directory: ${{ env.WORKING_DIR }}
+      run: |
+        STATE_KEY="7.6/gwlb-eks-private/terraform.tfstate"
+        cat > backend.tf << EOF
+        terraform {
+          backend "s3" {
+            bucket = "${{ github.event.inputs.s3_bucket }}"
+            key    = "$STATE_KEY"
+            region = "${{ github.event.inputs.aws_region }}"
+          }
+        }
+        EOF
+        
+    - name: Terraform Init
+      working-directory: ${{ env.WORKING_DIR }}
+      run: terraform init
+      
+    - name: Terraform Destroy
+      working-directory: ${{ env.WORKING_DIR }}
+      run: terraform destroy -auto-approve
+        
+    - name: Output Summary
+      run: |
+        echo "## EKS Destruction Summary" >> $GITHUB_STEP_SUMMARY
+        echo "- **AWS Region:** ${{ github.event.inputs.aws_region }}" >> $GITHUB_STEP_SUMMARY
+        echo "- **Status:** ✅ DESTROYED" >> $GITHUB_STEP_SUMMARY
