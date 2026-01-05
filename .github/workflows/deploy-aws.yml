@@ -221,9 +221,7 @@ jobs:
         tag_name_prefix = "fgt-$UNIQUE_SUFFIX"
         EOF
         elif [ "${{ github.event.inputs.deployment_type }}" = "gwlb-eks-private" ]; then
-          # For gwlb-eks-private, preserve existing terraform.tfvars and only add pipeline variables
           if [ -f "terraform.tfvars" ]; then
-            # Append pipeline variables to existing file
             cat >> terraform.tfvars << EOF
 
 # Pipeline variables (auto-generated)
