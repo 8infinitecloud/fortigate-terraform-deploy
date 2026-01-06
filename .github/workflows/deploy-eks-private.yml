@@ -8,24 +8,24 @@ on:
         required: true
         default: 'us-east-1'
       customer_vpc_id:
-        description: 'Customer VPC ID from gwlb-crossaz'
-        required: true
+        description: 'Customer VPC ID from gwlb-crossaz (optional if hardcoded)'
+        required: false
         type: string
       customer_public_subnet_az1_id:
-        description: 'Public Subnet AZ1 ID'
-        required: true
+        description: 'Public Subnet AZ1 ID (optional if hardcoded)'
+        required: false
         type: string
       customer_public_subnet_az2_id:
-        description: 'Public Subnet AZ2 ID'
-        required: true
+        description: 'Public Subnet AZ2 ID (optional if hardcoded)'
+        required: false
         type: string
       customer_private_subnet_az1_id:
-        description: 'Private Subnet AZ1 ID'
-        required: true
+        description: 'Private Subnet AZ1 ID (optional if hardcoded)'
+        required: false
         type: string
       customer_private_subnet_az2_id:
-        description: 'Private Subnet AZ2 ID'
-        required: true
+        description: 'Private Subnet AZ2 ID (optional if hardcoded)'
+        required: false
         type: string
       cluster_name:
         description: 'EKS Cluster Name'
@@ -106,11 +106,6 @@ jobs:
         region = "${{ github.event.inputs.aws_region }}"
         az1 = "${{ steps.az.outputs.az1 }}"
         az2 = "${{ steps.az.outputs.az2 }}"
-        customer_vpc_id = "${{ github.event.inputs.customer_vpc_id }}"
-        customer_public_subnet_az1_id = "${{ github.event.inputs.customer_public_subnet_az1_id }}"
-        customer_public_subnet_az2_id = "${{ github.event.inputs.customer_public_subnet_az2_id }}"
-        customer_private_subnet_az1_id = "${{ github.event.inputs.customer_private_subnet_az1_id }}"
-        customer_private_subnet_az2_id = "${{ github.event.inputs.customer_private_subnet_az2_id }}"
         cluster_name = "${{ github.event.inputs.cluster_name }}"
         eks_private_subnet_az1_cidr = "20.1.4.0/24"
         eks_private_subnet_az2_cidr = "20.1.5.0/24"
@@ -122,6 +117,23 @@ jobs:
         endpoint_public_access = false
         eks_admin_users = ["hassel.munoz"]
         EOF
+        
+        # Only add VPC/subnet variables if provided as inputs
+        if [ -n "${{ github.event.inputs.customer_vpc_id }}" ]; then
+          echo 'customer_vpc_id = "${{ github.event.inputs.customer_vpc_id }}"' >> terraform.tfvars
+        fi
+        if [ -n "${{ github.event.inputs.customer_public_subnet_az1_id }}" ]; then
+          echo 'customer_public_subnet_az1_id = "${{ github.event.inputs.customer_public_subnet_az1_id }}"' >> terraform.tfvars
+        fi
+        if [ -n "${{ github.event.inputs.customer_public_subnet_az2_id }}" ]; then
+          echo 'customer_public_subnet_az2_id = "${{ github.event.inputs.customer_public_subnet_az2_id }}"' >> terraform.tfvars
+        fi
+        if [ -n "${{ github.event.inputs.customer_private_subnet_az1_id }}" ]; then
+          echo 'customer_private_subnet_az1_id = "${{ github.event.inputs.customer_private_subnet_az1_id }}"' >> terraform.tfvars
+        fi
+        if [ -n "${{ github.event.inputs.customer_private_subnet_az2_id }}" ]; then
+          echo 'customer_private_subnet_az2_id = "${{ github.event.inputs.customer_private_subnet_az2_id }}"' >> terraform.tfvars
+        fi
         
     - name: Terraform Init
       working-directory: ${{ env.WORKING_DIR }}
