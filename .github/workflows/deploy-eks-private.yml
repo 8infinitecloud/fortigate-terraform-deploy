@@ -31,6 +31,10 @@ on:
         description: 'EKS Cluster Name'
         required: true
         default: 'customer-eks-cluster'
+      eks_admin_user:
+        description: 'IAM username for EKS admin access (optional)'
+        required: false
+        type: string
       s3_bucket:
         description: 'S3 Bucket for Terraform state (optional)'
         required: false
@@ -113,8 +117,14 @@ jobs:
         max_capacity = 4
         min_capacity = 1
         endpoint_public_access = false
-        eks_admin_users = ["hassel.munoz"]
         EOF
+        
+        # Add admin user if provided
+        if [ -n "${{ github.event.inputs.eks_admin_user }}" ]; then
+          echo 'eks_admin_users = ["${{ github.event.inputs.eks_admin_user }}"]' >> terraform.tfvars
+        else
+          echo 'eks_admin_users = []' >> terraform.tfvars
+        fi
         
         # Only add VPC/subnet variables if provided as inputs
         if [ -n "${{ github.event.inputs.customer_vpc_id }}" ]; then

@@ -103,7 +103,7 @@ variable "endpoint_public_access" {
 variable "eks_admin_users" {
   description = "List of IAM users to grant admin access to EKS cluster"
   type        = list(string)
-  default     = ["hassel.munoz"]
+  default     = []
 }
 
 variable "public_access_cidrs" {

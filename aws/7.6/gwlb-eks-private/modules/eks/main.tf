@@ -24,16 +24,20 @@ resource "aws_eks_cluster" "cluster" {
   })
 }
 
-# EKS Access Entry for admin users
+# EKS Access Entry for admin users (only if users exist)
 resource "aws_eks_access_entry" "admin_users" {
   count         = length(var.eks_admin_users)
   cluster_name  = aws_eks_cluster.cluster.name
   principal_arn = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:user/${var.eks_admin_users[count.index]}"
   type          = "STANDARD"
+
+  lifecycle {
+    ignore_changes = [principal_arn]
+  }
 }
 
 resource "aws_eks_access_policy_association" "admin_policy" {
-  count           = length(var.eks_admin_users)
+  count           = length(aws_eks_access_entry.admin_users)
   cluster_name    = aws_eks_cluster.cluster.name
   principal_arn   = aws_eks_access_entry.admin_users[count.index].principal_arn
   policy_arn      = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
