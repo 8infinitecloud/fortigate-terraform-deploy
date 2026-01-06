@@ -58,6 +58,28 @@ jobs:
       with:
         terraform-version: ${{ env.TF_VERSION }}
         
+    - name: Set AZ variables based on region
+      id: az
+      run: |
+        case "${{ github.event.inputs.aws_region }}" in
+          us-east-1)
+            echo "az1=us-east-1a" >> $GITHUB_OUTPUT
+            echo "az2=us-east-1b" >> $GITHUB_OUTPUT
+            ;;
+          us-west-2)
+            echo "az1=us-west-2a" >> $GITHUB_OUTPUT
+            echo "az2=us-west-2b" >> $GITHUB_OUTPUT
+            ;;
+          eu-west-1)
+            echo "az1=eu-west-1a" >> $GITHUB_OUTPUT
+            echo "az2=eu-west-1b" >> $GITHUB_OUTPUT
+            ;;
+          *)
+            echo "az1=${{ github.event.inputs.aws_region }}a" >> $GITHUB_OUTPUT
+            echo "az2=${{ github.event.inputs.aws_region }}b" >> $GITHUB_OUTPUT
+            ;;
+        esac
+        
     - name: Configure S3 backend
       if: github.event.inputs.s3_bucket != ''
       working-directory: ${{ env.WORKING_DIR }}
@@ -71,6 +93,30 @@ jobs:
             region = "${{ github.event.inputs.aws_region }}"
           }
         }
+        EOF
+        
+    - name: Create terraform.tfvars for destroy
+      working-directory: ${{ env.WORKING_DIR }}
+      run: |
+        cat > terraform.tfvars << EOF
+        access_key = "${{ secrets.AWS_ACCESS_KEY_ID }}"
+        secret_key = "${{ secrets.AWS_SECRET_ACCESS_KEY }}"
+        region = "${{ github.event.inputs.aws_region }}"
+        az1 = "${{ steps.az.outputs.az1 }}"
+        az2 = "${{ steps.az.outputs.az2 }}"
+        cluster_name = "customer-eks-cluster"
+        customer_vpc_id = "vpc-009cd288bad3903dc"
+        customer_public_subnet_az1_id = "subnet-02d5d12b41c0d846f"
+        customer_public_subnet_az2_id = "subnet-05a64f746bb4fc811"
+        customer_private_subnet_az1_id = "subnet-0b8b8b8b8b8b8b8b8"
+        customer_private_subnet_az2_id = "subnet-06af0c59e9fd58e06"
+        kubernetes_version = "1.29"
+        node_instance_types = ["t3.medium"]
+        desired_capacity = 2
+        max_capacity = 4
+        min_capacity = 1
+        endpoint_public_access = true
+        eks_admin_users = []
         EOF
         
     - name: Terraform Init
