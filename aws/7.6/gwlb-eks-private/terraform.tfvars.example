@@ -12,8 +12,8 @@
 # customer_private_subnet_az2_id = "subnet-xxxxxxxxx"
 
 # New subnets for EKS worker nodes (CIDRs will be created automatically)
-# eks_private_subnet_az1_cidr = "10.1.200.0/24"
-# eks_private_subnet_az2_cidr = "10.1.201.0/24"
+# eks_private_subnet_az1_cidr = "20.1.200.0/24"
+# eks_private_subnet_az2_cidr = "20.1.201.0/24"
 
 # EKS Configuration
 # cluster_name = "customer-eks-cluster"
