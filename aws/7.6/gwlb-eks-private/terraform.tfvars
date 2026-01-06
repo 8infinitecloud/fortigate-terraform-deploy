@@ -1,13 +1,13 @@
 # Existing infrastructure from gwlb-crossaz deployment
-customer_vpc_id = "vpc-0c939eaa020ee2056"
+customer_vpc_id = "vpc-009cd288bad3903dc"
 
 # REQUIRED: Get these subnet IDs from your gwlb-crossaz deployment
 # Run: cd ../gwlb-crossaz && terraform output
 # Or use AWS Console to find subnets in the VPC above
-customer_public_subnet_az1_id = "subnet-09236d6190c791e55"
-customer_public_subnet_az2_id = "subnet-01cd4de7b2c0febe2"
-customer_private_subnet_az1_id = "subnet-08ea1a92fe396f960"
-customer_private_subnet_az2_id = "subnet-0b10169ec035c91c0"
+customer_public_subnet_az1_id = "subnet-02d5d12b41c0d846f"
+customer_public_subnet_az2_id = "subnet-05a64f746bb4fc811"
+customer_private_subnet_az1_id = "subnet-0c19baa05aec046cc"
+customer_private_subnet_az2_id = "subnet-06af0c59e9fd58e06"
 
 # New subnets for EKS worker nodes (will be created automatically)
 eks_private_subnet_az1_cidr = "20.1.10.0/24"
