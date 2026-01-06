@@ -31,8 +31,8 @@ output "IngressPrivateSubnetAZ2" {
   value = var.customer_private_subnet_az2_id
 }
 
-output "NATGatewayAZ1" {
-  value = aws_nat_gateway.nat_gw_az1.id
+output "NATGateway" {
+  value = aws_nat_gateway.nat_gw.id
 }
 
 output "KubeconfigCommand" {
