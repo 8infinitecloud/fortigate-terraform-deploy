@@ -112,8 +112,8 @@ jobs:
         customer_private_subnet_az1_id = "${{ github.event.inputs.customer_private_subnet_az1_id }}"
         customer_private_subnet_az2_id = "${{ github.event.inputs.customer_private_subnet_az2_id }}"
         cluster_name = "${{ github.event.inputs.cluster_name }}"
-        eks_private_subnet_az1_cidr = "20.1.10.0/24"
-        eks_private_subnet_az2_cidr = "20.1.11.0/24"
+        eks_private_subnet_az1_cidr = "20.1.4.0/24"
+        eks_private_subnet_az2_cidr = "20.1.5.0/24"
         kubernetes_version = "1.28"
         node_instance_types = ["t3.medium"]
         desired_capacity = 2
