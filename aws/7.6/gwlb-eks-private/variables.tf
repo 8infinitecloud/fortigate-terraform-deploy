@@ -105,3 +105,9 @@ variable "eks_admin_users" {
   type        = list(string)
   default     = ["hassel.munoz"]
 }
+
+variable "public_access_cidrs" {
+  description = "CIDR blocks that can access the public API server endpoint"
+  type        = list(string)
+  default     = ["0.0.0.0/0"]
+}
