@@ -1,15 +1,6 @@
-// Existing infrastructure from gwlb-crossaz deployment
-customer_vpc_id = "vpc-xxxxxxxxx"
-customer_public_subnet_az1_id = "subnet-xxxxxxxxx"
-customer_public_subnet_az2_id = "subnet-xxxxxxxxx"
-customer_private_subnet_az1_id = "subnet-xxxxxxxxx"
-customer_private_subnet_az2_id = "subnet-xxxxxxxxx"
-
 // New subnets for EKS worker nodes (will be created)
-eks_private_subnet_az1_cidr = "20.1.10.0/24"
-eks_private_subnet_az2_cidr = "20.1.11.0/24"
-az1 = "eu-west-1a"
-az2 = "eu-west-1b"
+eks_private_subnet_az1_cidr = "10.1.10.0/24"
+eks_private_subnet_az2_cidr = "10.1.11.0/24"
 
 // EKS Configuration
 cluster_name = "customer-eks-cluster"
