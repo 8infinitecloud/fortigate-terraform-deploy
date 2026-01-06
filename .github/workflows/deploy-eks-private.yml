@@ -111,6 +111,11 @@ jobs:
         az1 = "${{ steps.az.outputs.az1 }}"
         az2 = "${{ steps.az.outputs.az2 }}"
         cluster_name = "${{ github.event.inputs.cluster_name }}"
+        customer_vpc_id = "vpc-0c939eaa020ee2056"
+        customer_public_subnet_az1_id = "subnet-REPLACE_WITH_ACTUAL_ID"
+        customer_public_subnet_az2_id = "subnet-REPLACE_WITH_ACTUAL_ID"
+        customer_private_subnet_az1_id = "subnet-REPLACE_WITH_ACTUAL_ID"
+        customer_private_subnet_az2_id = "subnet-REPLACE_WITH_ACTUAL_ID"
         kubernetes_version = "1.29"
         node_instance_types = ["t3.medium"]
         desired_capacity = 2
@@ -126,21 +131,21 @@ jobs:
           echo 'eks_admin_users = []' >> terraform.tfvars
         fi
         
-        # Only add VPC/subnet variables if provided as inputs
+        # Override hardcoded values with inputs if provided
         if [ -n "${{ github.event.inputs.customer_vpc_id }}" ]; then
-          echo 'customer_vpc_id = "${{ github.event.inputs.customer_vpc_id }}"' >> terraform.tfvars
+          sed -i 's/customer_vpc_id = "vpc-0c939eaa020ee2056"/customer_vpc_id = "${{ github.event.inputs.customer_vpc_id }}"/' terraform.tfvars
         fi
         if [ -n "${{ github.event.inputs.customer_public_subnet_az1_id }}" ]; then
-          echo 'customer_public_subnet_az1_id = "${{ github.event.inputs.customer_public_subnet_az1_id }}"' >> terraform.tfvars
+          sed -i 's/customer_public_subnet_az1_id = "subnet-REPLACE_WITH_ACTUAL_ID"/customer_public_subnet_az1_id = "${{ github.event.inputs.customer_public_subnet_az1_id }}"/' terraform.tfvars
         fi
         if [ -n "${{ github.event.inputs.customer_public_subnet_az2_id }}" ]; then
-          echo 'customer_public_subnet_az2_id = "${{ github.event.inputs.customer_public_subnet_az2_id }}"' >> terraform.tfvars
+          sed -i 's/customer_public_subnet_az2_id = "subnet-REPLACE_WITH_ACTUAL_ID"/customer_public_subnet_az2_id = "${{ github.event.inputs.customer_public_subnet_az2_id }}"/' terraform.tfvars
         fi
         if [ -n "${{ github.event.inputs.customer_private_subnet_az1_id }}" ]; then
-          echo 'customer_private_subnet_az1_id = "${{ github.event.inputs.customer_private_subnet_az1_id }}"' >> terraform.tfvars
+          sed -i 's/customer_private_subnet_az1_id = "subnet-REPLACE_WITH_ACTUAL_ID"/customer_private_subnet_az1_id = "${{ github.event.inputs.customer_private_subnet_az1_id }}"/' terraform.tfvars
         fi
         if [ -n "${{ github.event.inputs.customer_private_subnet_az2_id }}" ]; then
-          echo 'customer_private_subnet_az2_id = "${{ github.event.inputs.customer_private_subnet_az2_id }}"' >> terraform.tfvars
+          sed -i 's/customer_private_subnet_az2_id = "subnet-REPLACE_WITH_ACTUAL_ID"/customer_private_subnet_az2_id = "${{ github.event.inputs.customer_private_subnet_az2_id }}"/' terraform.tfvars
         fi
         
     - name: Terraform Init

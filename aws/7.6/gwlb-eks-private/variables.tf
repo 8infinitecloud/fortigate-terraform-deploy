@@ -10,26 +10,31 @@ variable "region" {
 variable "customer_vpc_id" {
   description = "Customer VPC ID from gwlb-crossaz deployment"
   type        = string
+  default     = "vpc-009cd288bad3903dc"
 }
 
 variable "customer_public_subnet_az1_id" {
   description = "Customer public subnet AZ1 ID from gwlb-crossaz"
   type        = string
+  default     = "subnet-02d5d12b41c0d846f"
 }
 
 variable "customer_public_subnet_az2_id" {
   description = "Customer public subnet AZ2 ID from gwlb-crossaz"
   type        = string
+  default     = "subnet-05a64f746bb4fc811"
 }
 
 variable "customer_private_subnet_az1_id" {
   description = "Customer private subnet AZ1 ID from gwlb-crossaz (reserved for ingress)"
   type        = string
+  default     = "subnet-0c19baa05aec046cc"
 }
 
 variable "customer_private_subnet_az2_id" {
   description = "Customer private subnet AZ2 ID from gwlb-crossaz (reserved for ingress)"
   type        = string
+  default     = "subnet-06af0c59e9fd58e06"
 }
 
 // New subnets for EKS worker nodes
