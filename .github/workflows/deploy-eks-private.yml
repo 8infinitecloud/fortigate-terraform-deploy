@@ -107,8 +107,8 @@ jobs:
         az1 = "${{ steps.az.outputs.az1 }}"
         az2 = "${{ steps.az.outputs.az2 }}"
         cluster_name = "${{ github.event.inputs.cluster_name }}"
-        eks_private_subnet_az1_cidr = "20.1.4.0/24"
-        eks_private_subnet_az2_cidr = "20.1.5.0/24"
+        eks_private_subnet_az1_cidr = "20.1.100.0/24"
+        eks_private_subnet_az2_cidr = "20.1.101.0/24"
         kubernetes_version = "1.28"
         node_instance_types = ["t3.medium"]
         desired_capacity = 2
