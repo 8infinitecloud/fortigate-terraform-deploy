@@ -46,7 +46,7 @@ variable "min_capacity" {
 variable "endpoint_public_access" {
   description = "Enable public API server endpoint"
   type        = bool
-  default     = false
+  default     = true
 }
 
 variable "public_access_cidrs" {

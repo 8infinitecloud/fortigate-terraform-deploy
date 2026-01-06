@@ -35,6 +35,11 @@ on:
         description: 'IAM username for EKS admin access (optional)'
         required: false
         type: string
+      public_endpoint:
+        description: 'Enable public API endpoint'
+        required: false
+        type: boolean
+        default: true
       s3_bucket:
         description: 'S3 Bucket for Terraform state (optional)'
         required: false
@@ -121,7 +126,7 @@ jobs:
         desired_capacity = 2
         max_capacity = 4
         min_capacity = 1
-        endpoint_public_access = false
+        endpoint_public_access = ${{ github.event.inputs.public_endpoint || true }}
         EOF
         
         # Add admin user if provided
