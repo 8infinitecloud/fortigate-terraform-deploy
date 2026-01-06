@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Backend Database - Sistema de Inteligencia</title>
+    <style>
+        body {
+            font-family: 'Courier New', monospace;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
+            color: #00ff00;
+            overflow-x: auto;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: rgba(0,0,0,0.9);
+            border: 2px solid #00ff00;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 0 20px #00ff00;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #00ff00;
+            padding-bottom: 20px;
+        }
+        .header h1 {
+            color: #00ff00;
+            font-size: 2.2em;
+            margin: 0;
+            text-shadow: 0 0 10px #00ff00;
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+        @keyframes glow {
+            from { text-shadow: 0 0 10px #00ff00; }
+            to { text-shadow: 0 0 20px #00ff00, 0 0 30px #00ff00; }
+        }
+        .terminal {
+            background: #000;
+            border: 1px solid #00ff00;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+            font-size: 0.9em;
+        }
+        .prompt {
+            color: #ffff00;
+        }
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: rgba(0,255,0,0.05);
+        }
+        .table th, .table td {
+            border: 1px solid #00ff00;
+            padding: 8px;
+            text-align: left;
+            font-size: 0.85em;
+        }
+        .table th {
+            background: rgba(0,255,0,0.2);
+            color: #ffff00;
+        }
+        .classified {
+            color: #ff0000;
+            font-weight: bold;
+        }
+        .status-active { color: #00ff00; }
+        .status-inactive { color: #ff6600; }
+        .status-captured { color: #ff0000; }
+        .section {
+            margin: 30px 0;
+            border: 1px solid #333;
+            padding: 20px;
+            border-radius: 5px;
+        }
+        .section h3 {
+            color: #ffff00;
+            border-bottom: 1px solid #333;
+            padding-bottom: 10px;
+        }
+        .alert {
+            background: rgba(255,0,0,0.2);
+            border: 1px solid #ff0000;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+            animation: blink 1s infinite;
+        }
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0.7; }
+        }
+        .crypto-address {
+            font-family: monospace;
+            background: rgba(0,255,0,0.1);
+            padding: 2px 5px;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🕵️ SISTEMA DE INTELIGENCIA BACKEND</h1>
+            <p>Base de Datos Clasificada - Nivel de Acceso: ULTRA SECRETO</p>
+            <p>🔴 ALERTA: Operación "Libertad" en curso</p>
+        </div>
+
+        <div class="alert">
+            ⚠️ ALERTA CRÍTICA: Objetivo principal capturado - Actualizando registros en tiempo real
+        </div>
+
+        <div class="terminal">
+            <div class="prompt">root@intelligence-db:~$</div> SELECT * FROM targets WHERE status='HIGH_PRIORITY';<br>
+            <div class="prompt">root@intelligence-db:~$</div> UPDATE operations SET status='COMPLETED' WHERE target_id='NM-001';<br>
+            <div class="prompt">root@intelligence-db:~$</div> Query executed successfully. 1 row affected.<br>
+        </div>
+
+        <div class="section">
+            <h3>🎯 OBJETIVOS PRIORITARIOS</h3>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombre</th>
+                        <th>Cargo</th>
+                        <th>Estado</th>
+                        <th>Ubicación</th>
+                        <th>Recompensa</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>NM-001</td>
+                        <td class="classified">Nicolás Maduro</td>
+                        <td>Presidente de facto</td>
+                        <td class="status-captured">CAPTURADO</td>
+                        <td>Caracas → Custodia</td>
+                        <td>$15,000,000</td>
+                    </tr>
+                    <tr>
+                        <td>DR-002</td>
+                        <td class="classified">Diosdado Cabello</td>
+                        <td>Presidente ANC</td>
+                        <td class="status-active">BUSCADO</td>
+                        <td>Desconocida</td>
+                        <td>$10,000,000</td>
+                    </tr>
+                    <tr>
+                        <td>TR-003</td>
+                        <td class="classified">Tareck El Aissami</td>
+                        <td>Ministro Petróleo</td>
+                        <td class="status-inactive">FUGITIVO</td>
+                        <td>Posible: Medio Oriente</td>
+                        <td>$10,000,000</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="section">
+            <h3>💰 ACTIVOS CONGELADOS</h3>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Tipo</th>
+                        <th>Cantidad</th>
+                        <th>Valor USD</th>
+                        <th>Ubicación</th>
+                        <th>Estado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Cuentas Bancarias</td>
+                        <td>347</td>
+                        <td>$2,500,000,000</td>
+                        <td>Suiza, Andorra, Panamá</td>
+                        <td class="status-captured">CONGELADO</td>
+                    </tr>
+                    <tr>
+                        <td>Bitcoin</td>
+                        <td>1,250.5 BTC</td>
+                        <td>$53,567,425</td>
+                        <td class="crypto-address">1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa</td>
+                        <td class="status-captured">CONFISCADO</td>
+                    </tr>
+                    <tr>
+                        <td>Propiedades</td>
+                        <td>89</td>
+                        <td>$450,000,000</td>
+                        <td>Miami, Madrid, París</td>
+                        <td class="status-captured">EMBARGADO</td>
+                    </tr>
+                    <tr>
+                        <td>Oro</td>
+                        <td>73.6 toneladas</td>
+                        <td>$4,800,000,000</td>
+                        <td>Banco Central Venezuela</td>
+                        <td class="status-active">BLOQUEADO</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="section">
+            <h3>🛢️ RECURSOS PETROLEROS</h3>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Empresa</th>
+                        <th>Reservas (Barriles)</th>
+                        <th>Producción Diaria</th>
+                        <th>Ingresos Bloqueados</th>
+                        <th>Control</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>PDVSA</td>
+                        <td>303,800,000,000</td>
+                        <td>685,000</td>
+                        <td>$12,500,000,000</td>
+                        <td class="status-captured">INTERVENIDO</td>
+                    </tr>
+                    <tr>
+                        <td>CITGO</td>
+                        <td>N/A</td>
+                        <td>N/A</td>
+                        <td>$7,200,000,000</td>
+                        <td class="status-captured">PROTEGIDO</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="section">
+            <h3>📡 OPERACIONES ACTIVAS</h3>
+            <div class="terminal">
+                <div>OPERACIÓN LIBERTAD: <span class="status-captured">FASE 3 COMPLETADA</span></div>
+                <div>- Objetivo principal: ✅ CAPTURADO</div>
+                <div>- Activos congelados: ✅ $7.2B USD</div>
+                <div>- Red de colaboradores: 🔄 EN PROCESO</div>
+                <div>- Transición democrática: 🔄 INICIANDO</div>
+                <br>
+                <div>OPERACIÓN RESCATE ECONÓMICO: <span class="status-active">ACTIVA</span></div>
+                <div>- Recuperación de reservas: 🔄 45% completado</div>
+                <div>- Repatriación de fondos: 🔄 EN NEGOCIACIÓN</div>
+                <div>- Reconstrucción institucional: ⏳ PENDIENTE</div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h3>🌐 CONEXIONES INTERNACIONALES</h3>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>País/Organización</th>
+                        <th>Tipo Relación</th>
+                        <th>Activos Involucrados</th>
+                        <th>Estado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Rusia</td>
+                        <td>Militar/Energético</td>
+                        <td>$3,200,000,000</td>
+                        <td class="status-active">MONITOREANDO</td>
+                    </tr>
+                    <tr>
+                        <td>China</td>
+                        <td>Comercial/Préstamos</td>
+                        <td>$20,000,000,000</td>
+                        <td class="status-active">NEGOCIANDO</td>
+                    </tr>
+                    <tr>
+                        <td>Cuba</td>
+                        <td>Inteligencia/Militar</td>
+                        <td>$500,000,000</td>
+                        <td class="status-inactive">DESMANTELANDO</td>
+                    </tr>
+                    <tr>
+                        <td>Irán</td>
+                        <td>Petróleo/Tecnología</td>
+                        <td>$1,800,000,000</td>
+                        <td class="status-captured">SANCIONADO</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div style="text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid #00ff00;">
+            <p>🔒 Clasificación: ULTRA SECRETO | 🕐 Última actualización: <span id="timestamp"></span></p>
+            <p>🖥️ Pod: <span id="backend-pod">backend-db-xyz</span> | 📊 Registros: <span id="record-count">2,847,392</span></p>
+        </div>
+    </div>
+
+    <script>
+        function updateData() {
+            const now = new Date();
+            document.getElementById('timestamp').textContent = now.toLocaleString('es-ES');
+            document.getElementById('backend-pod').textContent = 'backend-db-' + Math.random().toString(36).substr(2, 6);
+            document.getElementById('record-count').textContent = (2800000 + Math.floor(Math.random() * 100000)).toLocaleString();
+        }
+        
+        setInterval(updateData, 5000);
+        updateData();
+    </script>
+</body>
+</html>

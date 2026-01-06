@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Noticias Venezuela - Captura de Maduro</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        .header {
+            background: #c41e3a;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+        .content {
+            padding: 30px;
+        }
+        .news-item {
+            margin-bottom: 30px;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 20px;
+        }
+        .news-title {
+            font-size: 1.8em;
+            color: #c41e3a;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+        .news-date {
+            color: #666;
+            font-style: italic;
+            margin-bottom: 15px;
+        }
+        .news-text {
+            line-height: 1.6;
+            font-size: 1.1em;
+        }
+        .image-placeholder {
+            width: 100%;
+            height: 300px;
+            background: #f0f0f0;
+            border: 2px dashed #ccc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 20px 0;
+            border-radius: 8px;
+            color: #666;
+            font-size: 1.2em;
+        }
+        .breaking {
+            background: #ff4444;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: bold;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.7; }
+            100% { opacity: 1; }
+        }
+        .footer {
+            background: #333;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+        .tech-info {
+            background: #f8f9fa;
+            border-left: 4px solid #007bff;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 0 5px 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🇻🇪 NOTICIAS VENEZUELA</h1>
+            <p>Información actualizada sobre los acontecimientos políticos</p>
+        </div>
+        
+        <div class="content">
+            <div class="breaking">
+                🚨 NOTICIA DE ÚLTIMA HORA 🚨
+            </div>
+            
+            <div class="news-item">
+                <div class="news-title">Operativo Internacional Resulta en Captura de Nicolás Maduro</div>
+                <div class="news-date">6 de Enero, 2026 - Caracas, Venezuela</div>
+                
+                <div style="text-align: center; margin: 20px 0;">
+                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQZnf0Qc6kNIVV7bOpJLLMpcpgHbEJ5Q5IsQQ&s" 
+                         alt="Imagen de referencia del operativo" 
+                         style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.3);">
+                    <p style="font-style: italic; color: #666; margin-top: 10px;">
+                        Imagen de referencia del operativo internacional
+                    </p>
+                </div>
+                
+                <div class="news-text">
+                    <p><strong>CARACAS</strong> - En una operación coordinada internacional, las autoridades han procedido con la captura del controvertido líder político Nicolás Maduro, marcando un momento histórico en la política venezolana.</p>
+                    
+                    <p>El operativo, que se desarrolló en las primeras horas de la mañana, involucró la participación de múltiples agencias internacionales y contó con el apoyo de organizaciones de derechos humanos.</p>
+                    
+                    <p>Esta acción representa un punto de inflexión significativo para Venezuela y la región, con implicaciones que se extenderán más allá de las fronteras nacionales.</p>
+                    
+                    <p><em>La situación continúa desarrollándose y se esperan más detalles en las próximas horas.</em></p>
+                </div>
+            </div>
+            
+            <div class="tech-info">
+                <h3>🔧 Información Técnica del Sistema</h3>
+                <p><strong>Servidor:</strong> EKS Kubernetes Cluster</p>
+                <p><strong>Load Balancer:</strong> AWS Application Load Balancer</p>
+                <p><strong>Infraestructura:</strong> FortiGate Security + Private Subnets</p>
+                <p><strong>Pod:</strong> <span id="hostname">Cargando...</span></p>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>&copy; 2026 Sistema de Noticias Venezuela | Powered by AWS EKS</p>
+            <p>Infraestructura segura con FortiGate Protection</p>
+        </div>
+    </div>
+    
+    <script>
+        // Simular obtención del hostname del pod
+        document.getElementById('hostname').textContent = 'frontend-pod-' + Math.random().toString(36).substr(2, 9);
+        
+        // Actualizar timestamp cada segundo
+        setInterval(function() {
+            const now = new Date();
+            document.querySelector('.news-date').textContent = 
+                now.toLocaleDateString('es-ES', { 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                }) + ' - Caracas, Venezuela';
+        }, 1000);
+    </script>
+</body>
+</html>

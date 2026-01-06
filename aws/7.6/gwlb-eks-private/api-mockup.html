@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Financiera Venezuela - Endpoints</title>
+    <style>
+        body {
+            font-family: 'Courier New', monospace;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: #fff;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(0,0,0,0.8);
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #00ff41;
+            padding-bottom: 20px;
+        }
+        .header h1 {
+            color: #00ff41;
+            font-size: 2.5em;
+            margin: 0;
+            text-shadow: 0 0 10px #00ff41;
+        }
+        .endpoint {
+            background: rgba(0,255,65,0.1);
+            border-left: 4px solid #00ff41;
+            margin: 20px 0;
+            padding: 20px;
+            border-radius: 5px;
+        }
+        .method {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 3px;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        .get { background: #28a745; }
+        .post { background: #007bff; }
+        .put { background: #ffc107; color: #000; }
+        .delete { background: #dc3545; }
+        .path {
+            color: #00ff41;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+        .description {
+            margin: 10px 0;
+            color: #ccc;
+        }
+        .response {
+            background: rgba(0,0,0,0.5);
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 10px;
+            border: 1px solid #333;
+        }
+        .json {
+            color: #00ff41;
+            white-space: pre-wrap;
+            font-size: 0.9em;
+        }
+        .status {
+            color: #ffd700;
+            font-weight: bold;
+        }
+        .live-data {
+            background: rgba(255,215,0,0.1);
+            border: 1px solid #ffd700;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .blink {
+            animation: blink 1s infinite;
+        }
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0.3; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>💰 API FINANCIERA VENEZUELA</h1>
+            <p>Sistema de Operaciones Bancarias y Criptomonedas</p>
+            <p class="status">🟢 ESTADO: <span class="blink">ACTIVO</span> | Pod: <span id="pod-name">api-pod-xyz</span></p>
+        </div>
+
+        <div class="live-data">
+            <h3>📊 Datos en Tiempo Real</h3>
+            <p>💵 USD/VES: <span id="usd-rate">36,245.50</span> VES</p>
+            <p>₿ Bitcoin: <span id="btc-price">$42,850.30</span> USD</p>
+            <p>📈 Transacciones hoy: <span id="transactions">15,847</span></p>
+        </div>
+
+        <div class="endpoint">
+            <span class="method get">GET</span>
+            <span class="path">/api/accounts</span>
+            <div class="description">Obtener lista de cuentas bancarias</div>
+            <div class="response">
+                <div class="json">{
+  "accounts": [
+    {
+      "id": "VE001234567890",
+      "bank": "Banco de Venezuela",
+      "balance": 2500000.50,
+      "currency": "VES",
+      "status": "active"
+    },
+    {
+      "id": "US987654321",
+      "bank": "Wells Fargo",
+      "balance": 15750.25,
+      "currency": "USD",
+      "status": "active"
+    }
+  ],
+  "total_accounts": 2
+}</div>
+            </div>
+        </div>
+
+        <div class="endpoint">
+            <span class="method post">POST</span>
+            <span class="path">/api/transfer</span>
+            <div class="description">Realizar transferencia internacional</div>
+            <div class="response">
+                <div class="json">{
+  "transaction_id": "TXN-2026-001547",
+  "from_account": "VE001234567890",
+  "to_account": "US987654321",
+  "amount": 1000000,
+  "currency": "VES",
+  "exchange_rate": 36245.50,
+  "usd_amount": 27.59,
+  "status": "processing",
+  "estimated_completion": "2026-01-06T18:45:00Z"
+}</div>
+            </div>
+        </div>
+
+        <div class="endpoint">
+            <span class="method get">GET</span>
+            <span class="path">/api/crypto/portfolio</span>
+            <div class="description">Portafolio de criptomonedas</div>
+            <div class="response">
+                <div class="json">{
+  "portfolio": {
+    "bitcoin": {
+      "amount": 0.5847,
+      "value_usd": 25067.89,
+      "value_ves": 908335250.50
+    },
+    "ethereum": {
+      "amount": 12.3456,
+      "value_usd": 31245.67,
+      "value_ves": 1132567890.25
+    },
+    "petro": {
+      "amount": 1000,
+      "value_usd": 6000.00,
+      "value_ves": 217470000.00
+    }
+  },
+  "total_value_usd": 62313.56,
+  "total_value_ves": 2258373140.75
+}</div>
+            </div>
+        </div>
+
+        <div class="endpoint">
+            <span class="method get">GET</span>
+            <span class="path">/api/sanctions/check</span>
+            <div class="description">Verificar estado de sanciones</div>
+            <div class="response">
+                <div class="json">{
+  "entity": "Nicolás Maduro",
+  "sanctions": {
+    "usa": {
+      "status": "sanctioned",
+      "since": "2017-07-31",
+      "agencies": ["OFAC", "Treasury"],
+      "frozen_assets": "$850M USD"
+    },
+    "eu": {
+      "status": "sanctioned", 
+      "since": "2018-01-22",
+      "frozen_assets": "€340M EUR"
+    },
+    "canada": {
+      "status": "sanctioned",
+      "since": "2017-09-22"
+    }
+  },
+  "total_frozen_assets": "$1.2B USD equivalent"
+}</div>
+            </div>
+        </div>
+
+        <div class="endpoint">
+            <span class="method put">PUT</span>
+            <span class="path">/api/assets/freeze</span>
+            <div class="description">Congelar activos financieros</div>
+            <div class="response">
+                <div class="json">{
+  "operation": "asset_freeze",
+  "target": "government_accounts",
+  "affected_accounts": 247,
+  "frozen_amount": {
+    "usd": 2500000000,
+    "ves": 90612375000000,
+    "crypto": {
+      "bitcoin": 1250.5,
+      "ethereum": 15000.75
+    }
+  },
+  "status": "executed",
+  "timestamp": "2026-01-06T17:30:00Z"
+}</div>
+            </div>
+        </div>
+
+        <div class="endpoint">
+            <span class="method get">GET</span>
+            <span class="path">/api/oil/reserves</span>
+            <div class="description">Reservas petroleras y ingresos</div>
+            <div class="response">
+                <div class="json">{
+  "oil_reserves": {
+    "proven_barrels": 303800000000,
+    "daily_production": 685000,
+    "current_price_per_barrel": 78.45,
+    "daily_revenue": 53736250
+  },
+  "blocked_accounts": {
+    "citgo_proceeds": 7200000000,
+    "pdvsa_accounts": 12500000000,
+    "status": "frozen_by_sanctions"
+  },
+  "accessible_revenue": 0
+}</div>
+            </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid #333;">
+            <p>🔒 Sistema Seguro | 🌐 Infraestructura: AWS EKS + FortiGate</p>
+            <p>⚡ Tiempo de respuesta: <span id="response-time">0.045</span>s</p>
+        </div>
+    </div>
+
+    <script>
+        // Simular datos en tiempo real
+        function updateLiveData() {
+            document.getElementById('usd-rate').textContent = (36000 + Math.random() * 500).toFixed(2);
+            document.getElementById('btc-price').textContent = '$' + (42000 + Math.random() * 2000).toFixed(2);
+            document.getElementById('transactions').textContent = Math.floor(15000 + Math.random() * 2000).toLocaleString();
+            document.getElementById('response-time').textContent = (Math.random() * 0.1).toFixed(3);
+            document.getElementById('pod-name').textContent = 'api-pod-' + Math.random().toString(36).substr(2, 6);
+        }
+        
+        setInterval(updateLiveData, 3000);
+        updateLiveData();
+    </script>
+</body>
+</html>
