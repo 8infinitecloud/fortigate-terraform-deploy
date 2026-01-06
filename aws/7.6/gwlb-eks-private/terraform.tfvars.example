@@ -1,12 +1,31 @@
-// New subnets for EKS worker nodes (will be created)
-eks_private_subnet_az1_cidr = "10.1.100.0/24"
-eks_private_subnet_az2_cidr = "10.1.101.0/24"
+# ========================================
+# Terraform Variables Example
+# ========================================
+# All variables are OPTIONAL - defaults from variables.tf will be used if not specified
+# Only uncomment and set values you want to override
 
-// EKS Configuration
-cluster_name = "customer-eks-cluster"
-kubernetes_version = "1.28"
-node_instance_types = ["t3.medium"]
-desired_capacity = 2
-max_capacity = 4
-min_capacity = 1
-endpoint_public_access = false
+# Existing infrastructure from gwlb-crossaz deployment
+# customer_vpc_id = "vpc-xxxxxxxxx"
+# customer_public_subnet_az1_id = "subnet-xxxxxxxxx"
+# customer_public_subnet_az2_id = "subnet-xxxxxxxxx"
+# customer_private_subnet_az1_id = "subnet-xxxxxxxxx"
+# customer_private_subnet_az2_id = "subnet-xxxxxxxxx"
+
+# New subnets for EKS worker nodes (CIDRs will be created automatically)
+# eks_private_subnet_az1_cidr = "10.1.200.0/24"
+# eks_private_subnet_az2_cidr = "10.1.201.0/24"
+
+# EKS Configuration
+# cluster_name = "customer-eks-cluster"
+# kubernetes_version = "1.29"
+# node_instance_types = ["t3.medium"]
+# desired_capacity = 2
+# max_capacity = 4
+# min_capacity = 1
+# endpoint_public_access = true
+# eks_admin_users = []
+
+# AWS Configuration (usually provided by pipeline)
+# region = "us-east-1"
+# az1 = "us-east-1a"
+# az2 = "us-east-1b"

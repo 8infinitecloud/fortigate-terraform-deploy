@@ -105,11 +105,6 @@ jobs:
         az1 = "${{ steps.az.outputs.az1 }}"
         az2 = "${{ steps.az.outputs.az2 }}"
         cluster_name = "customer-eks-cluster"
-        customer_vpc_id = "vpc-009cd288bad3903dc"
-        customer_public_subnet_az1_id = "subnet-02d5d12b41c0d846f"
-        customer_public_subnet_az2_id = "subnet-05a64f746bb4fc811"
-        customer_private_subnet_az1_id = "subnet-0b8b8b8b8b8b8b8b8"
-        customer_private_subnet_az2_id = "subnet-06af0c59e9fd58e06"
         kubernetes_version = "1.29"
         node_instance_types = ["t3.medium"]
         desired_capacity = 2

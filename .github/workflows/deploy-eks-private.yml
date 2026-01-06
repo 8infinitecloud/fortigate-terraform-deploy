@@ -116,11 +116,6 @@ jobs:
         az1 = "${{ steps.az.outputs.az1 }}"
         az2 = "${{ steps.az.outputs.az2 }}"
         cluster_name = "${{ github.event.inputs.cluster_name }}"
-        customer_vpc_id = "vpc-009cd288bad3903dc"
-        customer_public_subnet_az1_id = "subnet-02d5d12b41c0d846f"
-        customer_public_subnet_az2_id = "subnet-05a64f746bb4fc811"
-        customer_private_subnet_az1_id = "subnet-0b8b8b8b8b8b8b8b8"
-        customer_private_subnet_az2_id = "subnet-06af0c59e9fd58e06"
         kubernetes_version = "1.29"
         node_instance_types = ["t3.medium"]
         desired_capacity = 2
@@ -129,28 +124,28 @@ jobs:
         endpoint_public_access = ${{ github.event.inputs.public_endpoint || true }}
         EOF
         
+        # Only add VPC/subnet variables if provided as inputs (otherwise use defaults from variables.tf)
+        if [ -n "${{ github.event.inputs.customer_vpc_id }}" ]; then
+          echo 'customer_vpc_id = "${{ github.event.inputs.customer_vpc_id }}"' >> terraform.tfvars
+        fi
+        if [ -n "${{ github.event.inputs.customer_public_subnet_az1_id }}" ]; then
+          echo 'customer_public_subnet_az1_id = "${{ github.event.inputs.customer_public_subnet_az1_id }}"' >> terraform.tfvars
+        fi
+        if [ -n "${{ github.event.inputs.customer_public_subnet_az2_id }}" ]; then
+          echo 'customer_public_subnet_az2_id = "${{ github.event.inputs.customer_public_subnet_az2_id }}"' >> terraform.tfvars
+        fi
+        if [ -n "${{ github.event.inputs.customer_private_subnet_az1_id }}" ]; then
+          echo 'customer_private_subnet_az1_id = "${{ github.event.inputs.customer_private_subnet_az1_id }}"' >> terraform.tfvars
+        fi
+        if [ -n "${{ github.event.inputs.customer_private_subnet_az2_id }}" ]; then
+          echo 'customer_private_subnet_az2_id = "${{ github.event.inputs.customer_private_subnet_az2_id }}"' >> terraform.tfvars
+        fi
+        
         # Add admin user if provided
         if [ -n "${{ github.event.inputs.eks_admin_user }}" ]; then
           echo 'eks_admin_users = ["${{ github.event.inputs.eks_admin_user }}"]' >> terraform.tfvars
         else
           echo 'eks_admin_users = []' >> terraform.tfvars
-        fi
-        
-        # Override hardcoded values with inputs if provided
-        if [ -n "${{ github.event.inputs.customer_vpc_id }}" ]; then
-          sed -i 's/customer_vpc_id = "vpc-009cd288bad3903dc"/customer_vpc_id = "${{ github.event.inputs.customer_vpc_id }}"/' terraform.tfvars
-        fi
-        if [ -n "${{ github.event.inputs.customer_public_subnet_az1_id }}" ]; then
-          sed -i 's/customer_public_subnet_az1_id = "subnet-02d5d12b41c0d846f"/customer_public_subnet_az1_id = "${{ github.event.inputs.customer_public_subnet_az1_id }}"/' terraform.tfvars
-        fi
-        if [ -n "${{ github.event.inputs.customer_public_subnet_az2_id }}" ]; then
-          sed -i 's/customer_public_subnet_az2_id = "subnet-05a64f746bb4fc811"/customer_public_subnet_az2_id = "${{ github.event.inputs.customer_public_subnet_az2_id }}"/' terraform.tfvars
-        fi
-        if [ -n "${{ github.event.inputs.customer_private_subnet_az1_id }}" ]; then
-          sed -i 's/customer_private_subnet_az1_id = "subnet-0b8b8b8b8b8b8b8b8"/customer_private_subnet_az1_id = "${{ github.event.inputs.customer_private_subnet_az1_id }}"/' terraform.tfvars
-        fi
-        if [ -n "${{ github.event.inputs.customer_private_subnet_az2_id }}" ]; then
-          sed -i 's/customer_private_subnet_az2_id = "subnet-06af0c59e9fd58e06"/customer_private_subnet_az2_id = "${{ github.event.inputs.customer_private_subnet_az2_id }}"/' terraform.tfvars
         fi
         
     - name: Terraform Init
