@@ -3,7 +3,7 @@ variable "access_key" {}
 variable "secret_key" {}
 
 variable "region" {
-  default = "eu-west-1"
+  default = "us-east-1"
 }
 
 // Existing VPC and Subnet IDs from gwlb-crossaz deployment
@@ -36,25 +36,25 @@ variable "customer_private_subnet_az2_id" {
 variable "eks_private_subnet_az1_cidr" {
   description = "CIDR block for EKS private subnet AZ1"
   type        = string
-  default     = "20.1.100.0/24"
+  default     = "10.1.100.0/24"
 }
 
 variable "eks_private_subnet_az2_cidr" {
   description = "CIDR block for EKS private subnet AZ2"
   type        = string
-  default     = "20.1.101.0/24"
+  default     = "10.1.101.0/24"
 }
 
 variable "az1" {
   description = "Availability Zone 1"
   type        = string
-  default     = "eu-west-1a"
+  default     = "us-east-1a"
 }
 
 variable "az2" {
   description = "Availability Zone 2"
   type        = string
-  default     = "eu-west-1b"
+  default     = "us-east-1b"
 }
 
 // EKS Cluster Configuration
